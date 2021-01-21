@@ -51,8 +51,8 @@ const cardsToPickUp = ({ king, two, blackjacks }) => {
 }
 
 const combinationsToPlay = (initialCardArrays, hand, suitRunsOnly) => {
-    // TODO: Implement
-    return initialCards;
+    // TODO: Implement via recursion
+    return initialCardArrays;
 }
 
 const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
