@@ -51,8 +51,20 @@ const cardsToPickUp = ({ king, two, blackjacks }) => {
 }
 
 const combinationsToPlay = (initialCardArrays, hand, suitRunsOnly) => {
-    // TODO: Implement via recursion
-    return initialCardArrays;
+    // TODO: This is a wasteful function
+    const newInitialCardsArrays = initialCardArrays.flatMap(initialCardArray => {
+        const cardsLeftInHand = hand
+            .filter(card => !initialCardArray.some(c => c.value === card.value && c.suit === card.suit));
+        const cardsCanPlayNext = [];
+        return cardsCanPlay.map(card => initialCardArray.concat([card]));
+    });
+    // hasBigger in newInitialCardsArrays than in initialCardArrays
+    const hasBigger = false;
+    if (hasBigger) {
+        return combinationsToPlay(newInitialCardsArrays, hand, suitRunsOnly);
+    } else {
+        return initialCardArrays;
+    }
 }
 
 const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
