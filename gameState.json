@@ -1,0 +1,292 @@
+{
+"_id": "6009f3a997aaed5e53b8e671",
+"retrieval_id": "retrieval_id",
+"deck": [
+{
+  "_id": "6009f3a997aaed5e53b8e672",
+  "value": "9",
+  "suit": "Hearts"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e673",
+  "value": "9",
+  "suit": "Spades"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e674",
+  "value": "Queen",
+  "suit": "Clubs"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e675",
+  "value": "Ace",
+  "suit": "Clubs"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e676",
+  "value": "8",
+  "suit": "Clubs"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e677",
+  "value": "5",
+  "suit": "Diamonds"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e678",
+  "value": "10",
+  "suit": "Clubs"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e679",
+  "value": "King",
+  "suit": "Spades"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e67a",
+  "value": "Ace",
+  "suit": "Spades"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e67b",
+  "value": "6",
+  "suit": "Clubs"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e67c",
+  "value": "Queen",
+  "suit": "Spades"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e67d",
+  "value": "9",
+  "suit": "Diamonds"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e67e",
+  "value": "King",
+  "suit": "Clubs"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e67f",
+  "value": "10",
+  "suit": "Diamonds"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e680",
+  "value": "4",
+  "suit": "Clubs"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e681",
+  "value": "4",
+  "suit": "Diamonds"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e682",
+  "value": "5",
+  "suit": "Clubs"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e683",
+  "value": "Jack",
+  "suit": "Diamonds"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e684",
+  "value": "Jack",
+  "suit": "Hearts"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e685",
+  "value": "3",
+  "suit": "Spades"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e686",
+  "value": "7",
+  "suit": "Hearts"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e687",
+  "value": "4",
+  "suit": "Spades"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e688",
+  "value": "9",
+  "suit": "Clubs"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e689",
+  "value": "4",
+  "suit": "Hearts"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e68a",
+  "value": "6",
+  "suit": "Hearts"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e68b",
+  "value": "Queen",
+  "suit": "Diamonds"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e68c",
+  "value": "3",
+  "suit": "Clubs"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e68d",
+  "value": "Jack",
+  "suit": "Clubs"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e68e",
+  "value": "Queen",
+  "suit": "Hearts"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e68f",
+  "value": "3",
+  "suit": "Hearts"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e690",
+  "value": "5",
+  "suit": "Spades"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e691",
+  "value": "7",
+  "suit": "Diamonds"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e692",
+  "value": "6",
+  "suit": "Diamonds"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e693",
+  "value": "Jack",
+  "suit": "Spades"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e694",
+  "value": "8",
+  "suit": "Diamonds"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e695",
+  "value": "King",
+  "suit": "Hearts"
+},
+{
+  "_id": "6009f3a997aaed5e53b8e696",
+  "value": "8",
+  "suit": "Spades"
+}
+],
+"lastCardsPlayed": [
+{
+  "_id": "6009f3a997aaed5e53b8e697",
+  "value": "8",
+  "suit": "Hearts"
+}
+],
+"players": [
+{
+  "_id": "6009f3a997aaed5e53b8e698",
+  "name": "d",
+  "hand": [
+    {
+      "_id": "6009f3a997aaed5e53b8e699",
+      "value": "Ace",
+      "suit": "Hearts"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e69a",
+      "value": "5",
+      "suit": "Hearts"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e69b",
+      "value": "2",
+      "suit": "Diamonds"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e69c",
+      "value": "10",
+      "suit": "Spades"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e69d",
+      "value": "2",
+      "suit": "Clubs"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e69e",
+      "value": "7",
+      "suit": "Spades"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e69f",
+      "value": "2",
+      "suit": "Hearts"
+    }
+  ]
+},
+{
+  "_id": "6009f3a997aaed5e53b8e6a0",
+  "name": "s",
+  "hand": [
+    {
+      "_id": "6009f3a997aaed5e53b8e6a1",
+      "value": "10",
+      "suit": "Hearts"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e6a2",
+      "value": "Ace",
+      "suit": "Diamonds"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e6a3",
+      "value": "3",
+      "suit": "Diamonds"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e6a4",
+      "value": "7",
+      "suit": "Clubs"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e6a5",
+      "value": "6",
+      "suit": "Spades"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e6a6",
+      "value": "King",
+      "suit": "Diamonds"
+    },
+    {
+      "_id": "6009f3a997aaed5e53b8e6a7",
+      "value": "2",
+      "suit": "Spades"
+    }
+  ]
+}
+],
+"turn": "d",
+"activeCards": {
+"_id": "6009f3a997aaed5e53b8e6a8",
+"value": "8",
+"suit": "Hearts",
+"king": null,
+"two": null,
+"blackjacks": null
+},
+"__v": 0
+}

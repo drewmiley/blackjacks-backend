@@ -34,10 +34,25 @@ const possibleCardsToPlay = (activeCards, hand) => {
     return [];
 }
 
+const visibleViewOfPlayers = (players, activeCards, playerName) => {
+    return players.map(player => {
+        return {
+            name: player.name,
+            handSize: player.hand.length,
+            // TODO: Implement isLastCard
+            ...(player.name === playerName && {hand: player.hand}),
+            ...(player.name === playerName && {possibleCardsToPlay: possibleCardsToPlay(activeCards, player.hand)})
+        }
+    })
+}
+
 const displayGameStateForPlayer = (gameState, playerName) => {
-    // TODO: Implement
-    // If turn, display possible cards to play
-    return null;
+    return {
+        lastCardsPlayed: gameState.lastCardsPlayed,
+        turn: gameState.turn,
+        activeCards: gameState.activeCards,
+        players: visibleViewOfPlayers(gameState.players, gameState.activeCards, playerName)
+    };
 }
 
 const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, nomination = null) => {
