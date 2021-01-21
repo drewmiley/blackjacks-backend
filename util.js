@@ -30,20 +30,29 @@ const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null, nominati
     }
 }
 
-const cardsToPickUp = activeCards => {
-    if (activeCards.king) {
+const cardsToPickUp = ({ king, two, blackjacks }) => {
+    if (king) {
         return 0;
-    } else if (activeCards.two) {
+    } else if (two) {
         return 2 * two;
-    } else if (activeCards.blackjacks) {
+    } else if (blackjacks) {
         return 7 * blackjacks;
     } else {
         return 1;
     }
 }
 
-const possibleCardsToPlay = (activeCards, hand) => {
+const possibleCardsToPlay = ({ king, two, blackjacks }, hand) => {
     // TODO: Implement
+    if (king) {
+        return [];
+    } else if (two) {
+        return [];
+    } else if (blackjacks) {
+        return [];
+    } else {
+        return [];
+    }
     return [];
 }
 
