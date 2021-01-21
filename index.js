@@ -38,12 +38,17 @@ router.post('/init', async (req, res) => {
         deck,
         lastCardsPlayed: [initialCard],
         players,
-        turn: players[0],
+        turn: req.body.players[0],
         activeCards: getNextActiveCards([initialCard])
     }
     // TODO: Fix this
-    const gameCreated = await Game.create(newGame);
-    res.json({ message: 'Game created succesfully' });
+    const gameInProgress = await Game.findOne(FIND_ONE);
+    if (!gameInProgress) {
+        const gameCreated = await Game.create(newGame);
+        res.json({ message: 'Game created succesfully' });
+    } else {
+        res.json({ message: 'Game not created as one in progress'});
+    }
 })
 
 router.get('/state/:player', async (req, res) => {
