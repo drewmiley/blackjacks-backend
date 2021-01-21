@@ -5,10 +5,13 @@ const {
 
 // TODO : Special cards
 
-const getShuffledDeck = () => {
-    const newDeck = CARD_VALUES
+const newDeck = () => {
+    return CARD_VALUES
         .flatMap(value => SUITS.map(suit => ({ value, suit: suit.name })));
-    return newDeck
+}
+
+const getShuffledDeck = () => {
+    return newDeck()
         .map(card => ({...card, sort: Math.random() }))
         .sort((a, b) => a.sort - b.sort)
         .map(card => ({ value: card.value, suit: card.suit }));
@@ -35,6 +38,7 @@ const displayGameStateForPlayer = (gameState, playerName) => {
 
 const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, nomination = null) => {
     // TODO: Implement
+    // HACK - Assume cardsPlayed are valid thanks to util giving possible options
     return null;
 }
 
