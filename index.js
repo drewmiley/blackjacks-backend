@@ -11,36 +11,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const port = process.env.PORT || 8000;
 
-const router = express.Router();
-router.use((req, res, next) => {
-    console.log('Making request');
-    next();
-});
-
-router.get('/', (req, res) => {
-    res.json({ message: 'blackjacks backend is running' });
-});
-
-router.post('/init', (req, res) => {
-    // Add Game to DB
-    console.log(req.body.players);
-    res.json({ message: req.body.players });
-})
-
-router.get('/state/:player', (req, res) => {
-    // Get Game Data from DB as views by Player
-    console.log(req.params.player);
-    res.json({ message: `returning state for ${req.params.player}` });
-})
-
-router.post('/play/:player', (req, res) => {
-    // Validate whether valid set of cards, and update game situation in DB
-    // Return /state/:player response
-    console.log(req.params.player);
-    console.log(req.body.cards);
-    res.json({ message: `playing ${req.body.cards} cards for ${req.params.player}` });
-})
-
 const CARD_VALUES = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
 const SUITS = [
     { name: 'Clubs', isBlack: true },
@@ -80,6 +50,41 @@ const GameSchema = new Schema({
 });
 const Game = mongoose.model('Game', GameSchema);
 
+const router = express.Router();
+router.use((req, res, next) => {
+    console.log('Making request');
+    next();
+});
+
+router.get('/', (req, res) => {
+    res.json({ message: 'blackjacks backend is running' });
+});
+
+router.post('/init', (req, res) => {
+    // Add Game to DB
+    console.log(req.body.players);
+    const newDeck = CARD_VALUES
+        .flatMap(value => SUITS.map(suit => ({ value, suit: suit.name })));
+    const shuffledDeck = newDeck
+        .map(card => ({...card, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(card => ({ value: card.value, suit: card.suit }));
+    res.json({ message: req.body.players });
+})
+
+router.get('/state/:player', (req, res) => {
+    // Get Game Data from DB as views by Player
+    console.log(req.params.player);
+    res.json({ message: `returning state for ${req.params.player}` });
+})
+
+router.post('/play/:player', (req, res) => {
+    // Validate whether valid set of cards, and update game situation in DB
+    // Return /state/:player response
+    console.log(req.params.player);
+    console.log(req.body.cards);
+    res.json({ message: `playing ${req.body.cards} cards for ${req.params.player}` });
+})
 
 // const QuizSchema = new Schema({
 //     code: String,
