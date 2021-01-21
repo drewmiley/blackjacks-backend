@@ -38,7 +38,7 @@ router.post('/init', async (req, res) => {
         deck,
         lastCardsPlayed: [initialCard],
         players,
-        turn: req.body.players[0],
+        turnIndex: 0,
         activeCards: getNextActiveCards([initialCard])
     }
     // TODO: Fix this

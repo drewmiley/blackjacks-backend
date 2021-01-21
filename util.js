@@ -49,15 +49,29 @@ const visibleViewOfPlayers = (players, activeCards, playerName) => {
 const displayGameStateForPlayer = (gameState, playerName) => {
     return {
         lastCardsPlayed: gameState.lastCardsPlayed,
-        turn: gameState.turn,
+        turnIndex: gameState.turnIndex,
         activeCards: gameState.activeCards,
         players: visibleViewOfPlayers(gameState.players, gameState.activeCards, playerName)
     };
 }
 
 const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, nomination = null) => {
-    // TODO: Implement
     // HACK - Assume cardsPlayed are valid thanks to util giving possible options
+    let newDeck = null;
+    let newPlayers = null;
+    if (!cardsPlayed) {
+        // TODO: Implement for special cards
+        const cardsToPickUp = 1;
+    } else {
+        newDeck = deck;
+    }
+    const updatedGameState = {
+        deck: newDeck,
+        lastCardsPlayed: cardsPlayed,
+        players: newPlayers,
+        turnIndex: (currentGameState.turnIndex + 1) % currentGameState.players.length,
+        activeCards: getNextActiveCards([cardsPlayed, currentGameState.activeCards, nomination)
+    }
     return null;
 }
 
