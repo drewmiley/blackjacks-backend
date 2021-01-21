@@ -3,8 +3,6 @@ const {
     SUITS
 } = require('./constants');
 
-// TODO : Special cards
-
 const newDeck = () => {
     return CARD_VALUES
         .flatMap(value => SUITS.map(suit => ({ value, suit: suit.name })));
@@ -19,14 +17,24 @@ const getShuffledDeck = () => {
 
 // TODO: Make work for JacksTwosAndEights
 // TODO: Move to generalise this into mix and match rules
-const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null, nomination = null) => {
-    // TODO: Implement special cards
-    const cardInPlay = lastCardsPlayed[lastCardsPlayed.length - 1];
-    return {
-        ...cardInPlay,
-        king: null,
-        two: null,
-        blackjacks: null
+const getNextActiveCards = (lastCardsPlayed, currentActiveCards = { two: 0, blackjacks: 0 }, nomination = null) => {
+    if (lastCardsPlayed && lastCardsPlayed.length) {
+        const cardInPlay = lastCardsPlayed[lastCardsPlayed.length - 1];
+        return {
+            ...cardInPlay,
+            king: cardInPlay.value === 'King',
+            two: cardInPlay.value === 'Two' ? currentActiveCards.two + 1 : 0,
+            blackjacks: (cardInPlay.value === 'Jack' && SUITS.find(suit => suit.name === cardInPlay.suit).isBlack)
+                ? currentActiveCards.jack + 1 : 0
+        }
+    } else {
+        return {
+            value: currentActiveCards.value,
+            suit: currentActiveCards.suit,
+            king: false,
+            two: 0,
+            blackjacks: 0
+        }
     }
 }
 
@@ -42,18 +50,24 @@ const cardsToPickUp = ({ king, two, blackjacks }) => {
     }
 }
 
-const possibleCardsToPlay = ({ king, two, blackjacks }, hand) => {
+const combinationsToPlay = (initialCards, hand, suitRunsOnly) => {
     // TODO: Implement
+    return initialCards;
+}
+
+const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
+    let initialCards;
     if (king) {
-        return [];
+        initialCards = hand.filter(card => card.value === 'King');
     } else if (two) {
-        return [];
+        initialCards = hand.filter(card => card.value === 'Two');
     } else if (blackjacks) {
-        return [];
+        initialCards = hand.filter(card => card.value === 'Jack');
     } else {
-        return [];
+        initialCards = hand
+            .filter(card => card.value === value || card.suit === suit || (card.value === 'Ace' && value));
     }
-    return [];
+    return combinationsToPlay(initialCards, hand, king || two || blackjacks);
 }
 
 const visibleViewOfPlayers = (players, activeCards, playerName) => {
@@ -61,7 +75,8 @@ const visibleViewOfPlayers = (players, activeCards, playerName) => {
         return {
             name: player.name,
             handSize: player.hand.length,
-            // TODO: Implement isLastCard
+            // TODO: Implement isLastCard using combinationsToPlay
+            isLastCard: null,
             ...(player.name === playerName && {hand: player.hand}),
             ...(player.name === playerName && {possibleCardsToPlay: possibleCardsToPlay(activeCards, player.hand)})
         }
