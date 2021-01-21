@@ -53,6 +53,38 @@ const GameSchema = new Schema({
 });
 const Game = mongoose.model('Game', GameSchema);
 
+const getShuffledDeck = () => {
+    const newDeck = CARD_VALUES
+        .flatMap(value => SUITS.map(suit => ({ value, suit: suit.name })));
+    return newDeck
+        .map(card => ({...card, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(card => ({ value: card.value, suit: card.suit }));
+}
+
+// TODO: Make work for JacksTwosAndEights
+// TODO: Move to generalise this into mix and match rules
+const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null) => {
+    // TODO: Implement
+    return {
+        value: null,
+        suit: null,
+        king: null,
+        two: null,
+        blackjacks: null
+    }
+}
+
+const displayGameStateForPlayer = (gameState, playerName) => {
+    // TODO: Implement
+    return null;
+}
+
+const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, nomination = null) => {
+    // TODO: Implement
+    return null;
+}
+
 const router = express.Router();
 router.use((req, res, next) => {
     console.log('Making request');
@@ -60,57 +92,33 @@ router.use((req, res, next) => {
 });
 
 router.post('/init', async (req, res) => {
-    // Add Game to DB
-    console.log(req.body.players);
-    const newDeck = CARD_VALUES
-        .flatMap(value => SUITS.map(suit => ({ value, suit: suit.name })));
-    const shuffledDeck = newDeck
-        .map(card => ({...card, sort: Math.random() }))
-        .sort((a, b) => a.sort - b.sort)
-        .map(card => ({ value: card.value, suit: card.suit }));
+    const shuffledDeck = getShuffledDeck();
+    const players = req.body.players.map((name, i) => ({ name, hand: shuffledDeck.slice(7 * i, 7 * (i + 1))}));
+    const initialCard = shuffledDeck[7 * players.length];
+    const deck = shuffledDeck.slice(7 * players.length + 1);
     const newGame = {
         retrieval_id: RETRIEVAL_ID,
-        // TODO: Fill in null values
-        deck: shuffledDeck,
-        lastCardsPlayed: null,
-        players: null,
-        turn: null,
-        activeCards: {
-            value: null,
-            suit: null,
-            king: null,
-            two: null,
-            blackjacks: null
-        }
+        deck,
+        lastCardsPlayed: [initialCard],
+        players,
+        turn: players[0],
+        activeCards: getNextActiveCards([initialCard])
     }
     const gameCreated = await Game.create(newGame);
-    res.json({ message: 'game created' });
+    res.json({ message: 'Game created succesfully' });
 })
 
 router.get('/state/:player', async (req, res) => {
-    // Get Game Data from DB as views by Player
-    console.log(req.params.player);
     const gameState = await Game.findOne(FIND_ONE);
-    // TODO: Modify to show only what player can see
-    res.json(gameState);
-    // res.json({ message: `returning state for ${req.params.player}` });
+    res.json(displayGameStateForPlayer(gameState, req.params.player));
 })
 
 router.post('/play/:player', async (req, res) => {
-    // Validate whether valid set of cards, and update game situation in DB
-    // Return /state/:player response
-    console.log(req.params.player);
-    console.log(req.body.cards);
-    // FOR NOMINATION CARDS
-    console.log(req.body.nomination);
-    // TODO: Modify current game state with played cards
     const currentGameState = await Game.findOne(FIND_ONE);
-    // Need to use https://mongoosejs.com/docs/tutorials/findoneandupdate.html
-    await Game.findOneAndUpdate(FIND_ONE, currentGameState);
+    const updatedGameState = calculateUpdatedGameState(currentGameState, req.params.player, req.body.cards, req.body.nomination);
+    await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
     const newGameState = await Game.findOne(FIND_ONE);
-    // TODO: Modify to show only what player can see
-    res.json(newGameState);
-    // res.json({ message: `playing ${req.body.cards} cards for ${req.params.player}` });
+    res.json(displayGameStateForPlayer(newGameState, req.params.player));
 })
 
 app.use('/api', router);
