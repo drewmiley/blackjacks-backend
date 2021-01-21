@@ -1,0 +1,97 @@
+{
+	"info": {
+		"_postman_id": "d8f99590-eb18-4542-be59-6213db564574",
+		"name": "Blackjacks",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Init Game",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"players\": [\"d\", \"s\"]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/init",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"init"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Game State",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/state/d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"state",
+						"d"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Play Cards",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cards\": [{ \"value\": \"Jack\", \"suit\": \"Clubs\" }]\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8000/api/play/d",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"play",
+						"d"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
