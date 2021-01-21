@@ -17,10 +17,10 @@ const getShuffledDeck = () => {
 // TODO: Make work for JacksTwosAndEights
 // TODO: Move to generalise this into mix and match rules
 const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null, nomination = null) => {
-    // TODO: Implement
+    // TODO: Implement special cards
+    const cardInPlay = lastCardsPlayed[lastCardsPlayed.length - 1];
     return {
-        value: null,
-        suit: null,
+        ...cardInPlay,
         king: null,
         two: null,
         blackjacks: null
