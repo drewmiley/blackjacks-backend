@@ -30,6 +30,10 @@ const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null, nominati
     }
 }
 
+const possibleCardsToPlay = (activeCards, hand) => {
+    return [];
+}
+
 const displayGameStateForPlayer = (gameState, playerName) => {
     // TODO: Implement
     // If turn, display possible cards to play
