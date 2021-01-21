@@ -12,6 +12,7 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 8000;
 
 const RETRIEVAL_ID = 'retrieval_id';
+const FIND_ONE = { retrieval_id: RETRIEVAL_ID };
 
 const CARD_VALUES = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
 const SUITS = [
@@ -25,15 +26,14 @@ const CardSchema = new Schema({
     value: String,
     suit: String
 });
-// const Card = mongoose.model('Card', CardSchema);
 
 const PlayerSchema = new Schema({
     name: String,
     hand: [CardSchema]
 });
-// const Player = mongoose.model('Player', PlayerSchema);
 
 // TODO: Create JacksTwoAndEightsActiveSchema
+// TODO: Move to generalise this into mix and match rules
 const BlackJacksActiveCardsSchema = new Schema({
     value: String,
     suit: String,
@@ -41,7 +41,6 @@ const BlackJacksActiveCardsSchema = new Schema({
     two: Number,
     blackjacks: Number
 });
-// const BlackJacksActiveCards = mongoose.model('BlackJacksActiveCards', BlackJacksActiveCardsSchema);
 
 const GameSchema = new Schema({
     // retrieval_id used only for simple retrieval and deletion
@@ -60,10 +59,6 @@ router.use((req, res, next) => {
     next();
 });
 
-router.get('/', (req, res) => {
-    res.json({ message: 'blackjacks backend is running' });
-});
-
 router.post('/init', async (req, res) => {
     // Add Game to DB
     console.log(req.body.players);
@@ -75,6 +70,7 @@ router.post('/init', async (req, res) => {
         .map(card => ({ value: card.value, suit: card.suit }));
     const newGame = {
         retrieval_id: RETRIEVAL_ID,
+        // TODO: Fill in null values
         deck: shuffledDeck,
         lastCardsPlayed: null,
         players: null,
@@ -91,50 +87,31 @@ router.post('/init', async (req, res) => {
     res.json({ message: 'game created' });
 })
 
-router.get('/state/:player', (req, res) => {
+router.get('/state/:player', async (req, res) => {
     // Get Game Data from DB as views by Player
     console.log(req.params.player);
-    res.json({ message: `returning state for ${req.params.player}` });
+    const gameState = await Game.findOne(FIND_ONE);
+    // TODO: Modify to show only what player can see
+    res.json(gameState);
+    // res.json({ message: `returning state for ${req.params.player}` });
 })
 
-router.post('/play/:player', (req, res) => {
+router.post('/play/:player', async (req, res) => {
     // Validate whether valid set of cards, and update game situation in DB
     // Return /state/:player response
     console.log(req.params.player);
     console.log(req.body.cards);
-    res.json({ message: `playing ${req.body.cards} cards for ${req.params.player}` });
+    // FOR NOMINATION CARDS
+    console.log(req.body.nomination);
+    // TODO: Modify current game state with played cards
+    const currentGameState = await Game.findOne(FIND_ONE);
+    // Need to use https://mongoosejs.com/docs/tutorials/findoneandupdate.html
+    await Game.findOneAndUpdate(FIND_ONE, currentGameState);
+    const newGameState = await Game.findOne(FIND_ONE);
+    // TODO: Modify to show only what player can see
+    res.json(newGameState);
+    // res.json({ message: `playing ${req.body.cards} cards for ${req.params.player}` });
 })
-
-// const QuizSchema = new Schema({
-//     code: String,
-//     questions: [{
-//         category: String,
-//         questionType: String,
-//         difficulty: String,
-//         question: String,
-//         answer: String,
-//         incorrectAnswers: [String]
-//     }]
-// });
-// const Quiz = mongoose.model('Quiz', QuizSchema);
-//
-// router.route('/newquiz')
-//     .post(async (req, res) => {
-//         Quiz.create(quiz, err => {
-//             if (err) {
-//                 res.send(err);
-//             }
-//         });
-//     });
-// router.route('/quiz/:code')
-//     .get((req, res) => {
-//         Quiz.findOne({ 'code': req.params.code }, (err, quiz) => {
-//             if (err) {
-//                 res.send(err);
-//             }
-//             res.json(util.transformDBQuizToAPIQuiz(quiz));
-//         });
-//     });
 
 app.use('/api', router);
 app.listen(port);
