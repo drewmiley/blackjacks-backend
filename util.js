@@ -97,6 +97,7 @@ const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, no
     let newDeck = null;
     let newPlayers = null;
     if (!cardsPlayed) {
+        // TODO: Split out pick up cards into subfunctions
         const numberOfCardsToPickUp = cardsToPickUp(currentGameState.activeCards);
         let cardsPickedUp;
         if (numberOfCardsToPickUp > deck.length) {
