@@ -31,6 +31,7 @@ const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null, nominati
 }
 
 const possibleCardsToPlay = (activeCards, hand) => {
+    // TODO: Implement
     return [];
 }
 
@@ -61,18 +62,36 @@ const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, no
     let newPlayers = null;
     if (!cardsPlayed) {
         // TODO: Implement for special cards
-        const cardsToPickUp = 1;
+        const numberOfCardsToPickUp = 1;
+        // TODO: Implement when deck.length < cardsToPickUp
+        const cardsPickedUp = currentGameState.deck.splice(0, numberOfCardsToPickUp);
+        newDeck = currentGameState.deck.splice(numberOfCardsToPickUp);
+        newPlayers = currentGameState.player.map(player => {
+            return {
+                name: player.name,
+                hand: player.name === playerName
+                    ? player.hand.concat(cardsPickedUp)
+                    : player.hand
+            }
+        });
     } else {
-        newDeck = deck;
+        newDeck = currentGameState.deck;
+        newPlayers = currentGameState.players.map(player => {
+            return {
+                name: player.name,
+                hand: player.name === playerName
+                    ? player.hand.filter(card => !cardsPlayed.some(d => d._id === card._id))
+                    : player.hand
+            }
+        });
     }
-    const updatedGameState = {
+    return {
         deck: newDeck,
         lastCardsPlayed: cardsPlayed,
         players: newPlayers,
         turnIndex: (currentGameState.turnIndex + 1) % currentGameState.players.length,
-        activeCards: getNextActiveCards([cardsPlayed, currentGameState.activeCards, nomination)
-    }
-    return null;
+        activeCards: getNextActiveCards(cardsPlayed, currentGameState.activeCards, nomination)
+    };
 }
 
 module.exports = {
