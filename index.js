@@ -64,7 +64,7 @@ router.get('/', (req, res) => {
     res.json({ message: 'blackjacks backend is running' });
 });
 
-router.post('/init', (req, res) => {
+router.post('/init', async (req, res) => {
     // Add Game to DB
     console.log(req.body.players);
     const newDeck = CARD_VALUES
@@ -87,12 +87,8 @@ router.post('/init', (req, res) => {
             blackjacks: null
         }
     }
-    Game.create(newGame, err => {
-        if (err) {
-            res.send(err);
-        }
-        res.json({ message: 'game created' });
-    });
+    const gameCreated = await Game.create(newGame);
+    res.json({ message: 'game created' });
 })
 
 router.get('/state/:player', (req, res) => {
