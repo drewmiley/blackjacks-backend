@@ -69,9 +69,13 @@ const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, no
         const numberOfCardsToPickUp = cardsToPickUp(currentGameState.activeCards);
         let cardsPickedUp;
         if (numberOfCardsToPickUp > deck.length) {
-            // TODO: Implement
-            cardsPickedUp = [];
-            newDeck = [];
+            const leftoverCardsToPickUp = numberOfCardsToPickUp - deck.length;
+            const initialCardsPickedUp = deck;
+            const notInDeck = currentGameState.players.flatMap(player => player.hand).concat(initialCardsPickedUp);
+            const initialNewDeck = getShuffledDeck()
+                .filter(card => !notInDeck.some(c => c.value === card.value && c.suit === card.suit));
+            cardsPickedUp = initialNewDeck.splice(0, leftoverCardsToPickUp).concat(initialCardsPickedUp);
+            newDeck = initialNewDeck.splice(leftoverCardsToPickUp);
         } else {
             cardsPickedUp = currentGameState.deck.splice(0, numberOfCardsToPickUp);
             newDeck = currentGameState.deck.splice(numberOfCardsToPickUp);
@@ -90,7 +94,7 @@ const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, no
             return {
                 name: player.name,
                 hand: player.name === playerName
-                    ? player.hand.filter(card => !cardsPlayed.some(d => d._id === card._id))
+                    ? player.hand.filter(card => !cardsPlayed.some(c => c.value === card.value && c.suit === card.suit))
                     : player.hand
             }
         });
