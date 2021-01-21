@@ -3,6 +3,8 @@ const {
     SUITS
 } = require('./constants');
 
+// TODO : Special cards
+
 const getShuffledDeck = () => {
     const newDeck = CARD_VALUES
         .flatMap(value => SUITS.map(suit => ({ value, suit: suit.name })));
@@ -14,7 +16,7 @@ const getShuffledDeck = () => {
 
 // TODO: Make work for JacksTwosAndEights
 // TODO: Move to generalise this into mix and match rules
-const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null) => {
+const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null, nomination = null) => {
     // TODO: Implement
     return {
         value: null,
@@ -27,6 +29,7 @@ const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null) => {
 
 const displayGameStateForPlayer = (gameState, playerName) => {
     // TODO: Implement
+    // If turn, display possible cards to play
     return null;
 }
 

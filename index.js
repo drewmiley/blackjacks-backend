@@ -41,6 +41,7 @@ router.post('/init', async (req, res) => {
         turn: players[0],
         activeCards: getNextActiveCards([initialCard])
     }
+    // TODO: Fix this
     const gameCreated = await Game.create(newGame);
     res.json({ message: 'Game created succesfully' });
 })
