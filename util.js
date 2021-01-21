@@ -31,11 +31,11 @@ const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null, nominati
 }
 
 const cardsToPickUp = activeCards => {
-    if (king) {
+    if (activeCards.king) {
         return 0;
-    } else if (two) {
+    } else if (activeCards.two) {
         return 2 * two;
-    } else if (blackjacks) {
+    } else if (activeCards.blackjacks) {
         return 7 * blackjacks;
     } else {
         return 1;
