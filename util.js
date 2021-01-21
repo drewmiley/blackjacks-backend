@@ -50,7 +50,7 @@ const cardsToPickUp = ({ king, two, blackjacks }) => {
     }
 }
 
-const combinationsToPlay = (initialCards, hand, suitRunsOnly) => {
+const combinationsToPlay = (initialCardArrays, hand, suitRunsOnly) => {
     // TODO: Implement
     return initialCards;
 }
@@ -67,7 +67,7 @@ const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
         initialCards = hand
             .filter(card => card.value === value || card.suit === suit || (card.value === 'Ace' && value));
     }
-    return combinationsToPlay(initialCards, hand, king || two || blackjacks);
+    return combinationsToPlay(initialCards.map(card => [card]), hand, king || two || blackjacks);
 }
 
 const visibleViewOfPlayers = (players, activeCards, playerName) => {
