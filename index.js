@@ -11,6 +11,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const port = process.env.PORT || 8000;
 
+const RETRIEVAL_ID = 'retrieval_id';
+
 const CARD_VALUES = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'];
 const SUITS = [
     { name: 'Clubs', isBlack: true },
@@ -42,6 +44,8 @@ const BlackJacksActiveCardsSchema = new Schema({
 // const BlackJacksActiveCards = mongoose.model('BlackJacksActiveCards', BlackJacksActiveCardsSchema);
 
 const GameSchema = new Schema({
+    // retrieval_id used only for simple retrieval and deletion
+    retrieval_id: String,
     deck: [CardSchema],
     lastCardsPlayed: [CardSchema],
     players: [PlayerSchema],
@@ -69,7 +73,26 @@ router.post('/init', (req, res) => {
         .map(card => ({...card, sort: Math.random() }))
         .sort((a, b) => a.sort - b.sort)
         .map(card => ({ value: card.value, suit: card.suit }));
-    res.json({ message: req.body.players });
+    const newGame = {
+        retrieval_id: RETRIEVAL_ID,
+        deck: shuffledDeck,
+        lastCardsPlayed: null,
+        players: null,
+        turn: null,
+        activeCards: {
+            value: null,
+            suit: null,
+            king: null,
+            two: null,
+            blackjacks: null
+        }
+    }
+    Game.create(newGame, err => {
+        if (err) {
+            res.send(err);
+        }
+        res.json({ message: 'game created' });
+    });
 })
 
 router.get('/state/:player', (req, res) => {
