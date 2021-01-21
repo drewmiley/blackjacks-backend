@@ -31,8 +31,15 @@ const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null, nominati
 }
 
 const cardsToPickUp = activeCards => {
-    // TODO: Implement
-    return 1;
+    if (king) {
+        return 0;
+    } else if (two) {
+        return 2 * two;
+    } else if (blackjacks) {
+        return 7 * blackjacks;
+    } else {
+        return 1;
+    }
 }
 
 const possibleCardsToPlay = (activeCards, hand) => {
