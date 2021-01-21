@@ -30,6 +30,11 @@ const getNextActiveCards = (lastCardsPlayed, currentActiveCards = null, nominati
     }
 }
 
+const cardsToPickUp = activeCards => {
+    // TODO: Implement
+    return 1;
+}
+
 const possibleCardsToPlay = (activeCards, hand) => {
     // TODO: Implement
     return [];
@@ -61,11 +66,16 @@ const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, no
     let newDeck = null;
     let newPlayers = null;
     if (!cardsPlayed) {
-        // TODO: Implement for special cards
-        const numberOfCardsToPickUp = 1;
-        // TODO: Implement when deck.length < cardsToPickUp
-        const cardsPickedUp = currentGameState.deck.splice(0, numberOfCardsToPickUp);
-        newDeck = currentGameState.deck.splice(numberOfCardsToPickUp);
+        const numberOfCardsToPickUp = cardsToPickUp(currentGameState.activeCards);
+        let cardsPickedUp;
+        if (numberOfCardsToPickUp > deck.length) {
+            // TODO: Implement
+            cardsPickedUp = [];
+            newDeck = [];
+        } else {
+            cardsPickedUp = currentGameState.deck.splice(0, numberOfCardsToPickUp);
+            newDeck = currentGameState.deck.splice(numberOfCardsToPickUp);
+        }
         newPlayers = currentGameState.player.map(player => {
             return {
                 name: player.name,
