@@ -78,7 +78,7 @@ const GameSchema = new Schema({
     turn: String,
     activeCards: BlackJacksActiveCardsSchema
 });
-const Deck = mongoose.model('Deck', DeckSchema);
+const Game = mongoose.model('Game', GameSchema);
 
 
 // const QuizSchema = new Schema({
