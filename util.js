@@ -91,14 +91,14 @@ const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
 }
 
 const visibleViewOfPlayers = (players, activeCards, playerName) => {
+    const possibleCardsToPlayForPlayer = possibleCardsToPlay(activeCards, player.hand);
     return players.map(player => {
         return {
             name: player.name,
             handSize: player.hand.length,
-            // TODO: Implement isLastCard using combinationsToPlay
-            isLastCard: null,
-            ...(player.name === playerName && {hand: player.hand}),
-            ...(player.name === playerName && {possibleCardsToPlay: possibleCardsToPlay(activeCards, player.hand)})
+            isLastCard: possibleCardsToPlayForPlayer.filter(cards => cards.length === player.hand.length).length > 0,
+            ...(player.name === playerName && { hand: player.hand }),
+            ...(player.name === playerName && { possibleCardsToPlay: possibleCardsToPlayForPlayer })
         }
     })
 }
