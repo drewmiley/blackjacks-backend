@@ -62,7 +62,7 @@ const combinationsToPlay = (initialCardArrays, hand, valueRunsOnly, savedCombina
         const lastCard = initialCardArray[initialCardArray.length - 1];
         const cardsLeftInHand = hand
             .filter(card => !initialCardArray.some(c => c.value === card.value && c.suit === card.suit));
-        const cardsCanPlayNext = cardsLeftInHand.filter(handCard => {
+        const cardsCanPlay = cardsLeftInHand.filter(handCard => {
             return handCard.value === lastCard.value
                 || (!valueRunsOnly && handCard.suit === lastCard.suit && isOneUpOrDown(handCard.value, lastCard.value))
         });
