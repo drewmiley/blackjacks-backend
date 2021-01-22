@@ -64,11 +64,14 @@ router.post('/play/:player', async (req, res) => {
         const updatedGameState = calculateUpdatedGameState(gameState, req.params.player, req.body.cards, req.body.nomination);
         await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
         const newGameState = await Game.findOne(FIND_ONE).lean();
+        // TODO: Add cleanup on game end
         res.json(displayGameStateForPlayer(newGameState, req.params.player));
     } else {
         res.json(displayGameStateForPlayer(gameState, req.params.player));
     }
 })
+
+// TODO: Add delete game
 
 app.use('/api', router);
 app.listen(port);
