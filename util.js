@@ -50,13 +50,22 @@ const cardsToPickUp = ({ king, two, blackjacks }) => {
     }
 }
 
-const combinationsToPlay = (initialCardArrays, hand, suitRunsOnly, savedCombinations = []) => {
+const isOneUpOrDown = (firstCardValue, seconCardValue) => {
+    const firstIndex = CARD_VALUES.findIndex(cardValue => cardValue === firstCardValue);
+    const secondIndex = CARD_VALUES.findIndex(cardValue => cardValue === seconCardValue);
+    return (firstIndex + 1) % CARD_VALUES.length === secondIndex || (secondIndex + 1) % CARD_VALUES.length === firstIndex;
+}
+
+const combinationsToPlay = (initialCardArrays, hand, valueRunsOnly, savedCombinations = []) => {
     // STOP: Check this funky function
     const newInitialCardsArrays = initialCardArrays.flatMap(initialCardArray => {
+        const lastCard = initialCardArray[initialCardArray.length - 1];
         const cardsLeftInHand = hand
             .filter(card => !initialCardArray.some(c => c.value === card.value && c.suit === card.suit));
-        // TODO: This needs to be corrected
-        const cardsCanPlayNext = [];
+        const cardsCanPlayNext = cardsLeftInHand.filter(handCard => {
+            return handCard.value === lastCard.value
+                || (!valueRunsOnly && handCard.suit === lastCard.suit && isOneUpOrDown(handCard.value, lastCard.value))
+        });
         return cardsCanPlay.map(card => initialCardArray.concat([card]));
     });
     if (newInitialCardsArrays.length) {
