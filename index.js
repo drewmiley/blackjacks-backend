@@ -44,11 +44,16 @@ router.post('/init', async (req, res) => {
     // TODO: Fix this
     const gameInProgress = await Game.findOne(FIND_ONE);
     if (!gameInProgress) {
-        const gameCreated = await Game.create(newGame);
-        res.json({ message: 'Game created succesfully' });
+        await Game.create(newGame);
+        res.json({ message: 'Game created successfully' });
     } else {
         res.json({ message: 'Game not created as one in progress'});
     }
+})
+
+router.delete('/clear', async (req, res) => {
+    await Game.deleteOne(FIND_ONE);
+    res.json({ message: 'Game cleared successfully' });
 })
 
 router.get('/state/:player', async (req, res) => {
@@ -70,8 +75,6 @@ router.post('/play/:player', async (req, res) => {
         res.json(displayGameStateForPlayer(gameState, req.params.player));
     }
 })
-
-// TODO: Add delete game
 
 app.use('/api', router);
 app.listen(port);
