@@ -71,7 +71,7 @@ const combinationsToPlay = (initialCardArrays, hand, valueRunsOnly, savedCombina
     if (newInitialCardsArrays.length) {
         return combinationsToPlay(newInitialCardsArrays, hand, valueRunsOnly, savedCombinations.concat(initialCardArrays));
     } else {
-        return initialCardArrays;
+        return savedCombinations.concat(initialCardArrays);
     }
 }
 
