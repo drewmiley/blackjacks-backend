@@ -69,7 +69,7 @@ const combinationsToPlay = (initialCardArrays, hand, valueRunsOnly, savedCombina
         return cardsCanPlay.map(card => initialCardArray.concat([card]));
     });
     if (newInitialCardsArrays.length) {
-        return combinationsToPlay(newInitialCardsArrays, hand, suitRunsOnly, savedCombinations.concat(initialCardArrays));
+        return combinationsToPlay(newInitialCardsArrays, hand, valueRunsOnly, savedCombinations.concat(initialCardArrays));
     } else {
         return initialCardArrays;
     }
