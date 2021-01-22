@@ -57,11 +57,16 @@ router.get('/state/:player', async (req, res) => {
 })
 
 router.post('/play/:player', async (req, res) => {
-    const currentGameState = await Game.findOne(FIND_ONE).lean();
-    const updatedGameState = calculateUpdatedGameState(currentGameState, req.params.player, req.body.cards, req.body.nomination);
-    await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
-    const newGameState = await Game.findOne(FIND_ONE).lean();
-    res.json(displayGameStateForPlayer(newGameState, req.params.player));
+    const gameState = await Game.findOne(FIND_ONE).lean();
+    const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === turnIndex;
+    if (isPlayersTurn) {
+        const updatedGameState = calculateUpdatedGameState(gameState, req.params.player, req.body.cards, req.body.nomination);
+        await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
+        const newGameState = await Game.findOne(FIND_ONE).lean();
+        res.json(displayGameStateForPlayer(newGameState, req.params.player));
+    } else {
+        res.json(displayGameStateForPlayer(gameState, req.params.player));
+    }
 })
 
 app.use('/api', router);
