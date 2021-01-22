@@ -34,7 +34,7 @@ const getNextActiveCards = (lastCardsPlayed, currentActiveCards = { two: 0, blac
                 king: cardInPlay.value === 'King',
                 two: cardInPlay.value === 'Two' ? currentActiveCards.two + 1 : 0,
                 blackjacks: (cardInPlay.value === 'Jack' && SUITS.find(suit => suit.name === cardInPlay.suit).isBlack)
-                    ? currentActiveCards.jack + 1 : 0
+                    ? currentActiveCards.blackjacks + 1 : 0
             }
         }
     } else {
