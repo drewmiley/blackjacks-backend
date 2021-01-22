@@ -20,12 +20,22 @@ const getShuffledDeck = () => {
 const getNextActiveCards = (lastCardsPlayed, currentActiveCards = { two: 0, blackjacks: 0 }, nomination = null) => {
     if (lastCardsPlayed && lastCardsPlayed.length) {
         const cardInPlay = lastCardsPlayed[lastCardsPlayed.length - 1];
-        return {
-            ...cardInPlay,
-            king: cardInPlay.value === 'King',
-            two: cardInPlay.value === 'Two' ? currentActiveCards.two + 1 : 0,
-            blackjacks: (cardInPlay.value === 'Jack' && SUITS.find(suit => suit.name === cardInPlay.suit).isBlack)
-                ? currentActiveCards.jack + 1 : 0
+        if (cardInPlay.value === 'Ace' && nomination) {
+            return {
+                value: null,
+                suit: nomination,
+                king: false,
+                two: 0,
+                blackjacks: 0
+            }
+        } else {
+            return {
+                ...cardInPlay,
+                king: cardInPlay.value === 'King',
+                two: cardInPlay.value === 'Two' ? currentActiveCards.two + 1 : 0,
+                blackjacks: (cardInPlay.value === 'Jack' && SUITS.find(suit => suit.name === cardInPlay.suit).isBlack)
+                    ? currentActiveCards.jack + 1 : 0
+            }
         }
     } else {
         return {
@@ -85,9 +95,10 @@ const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
         initialCards = hand.filter(card => card.value === 'Jack');
     } else {
         initialCards = hand
-            .filter(card => card.value === value || card.suit === suit || (card.value === 'Ace' && value));
+            .filter(card => card.value === value || card.suit === suit));
     }
-    return combinationsToPlay(initialCards.map(card => [card]), hand, king || two || blackjacks);
+    const nominationSavedCombinations = (king || two || blackjacks) ? [] : hand.filter(card => card.value === 'Ace');
+    return combinationsToPlay(initialCards.map(card => [card]), hand, king || two || blackjacks, nominationSavedCombinations);
 }
 
 const visibleViewOfPlayers = (players, activeCards, playerName) => {
