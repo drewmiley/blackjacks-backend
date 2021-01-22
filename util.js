@@ -50,18 +50,17 @@ const cardsToPickUp = ({ king, two, blackjacks }) => {
     }
 }
 
-const combinationsToPlay = (initialCardArrays, hand, suitRunsOnly) => {
-    // TODO: This is a wasteful function
+const combinationsToPlay = (initialCardArrays, hand, suitRunsOnly, savedCombinations = []) => {
+    // STOP: Check this funky function
     const newInitialCardsArrays = initialCardArrays.flatMap(initialCardArray => {
         const cardsLeftInHand = hand
             .filter(card => !initialCardArray.some(c => c.value === card.value && c.suit === card.suit));
+        // TODO: This needs to be corrected
         const cardsCanPlayNext = [];
         return cardsCanPlay.map(card => initialCardArray.concat([card]));
     });
-    // hasBigger in newInitialCardsArrays than in initialCardArrays
-    const hasBigger = false;
-    if (hasBigger) {
-        return combinationsToPlay(newInitialCardsArrays, hand, suitRunsOnly);
+    if (newInitialCardsArrays.length) {
+        return combinationsToPlay(newInitialCardsArrays, hand, suitRunsOnly, savedCombinations.concat(initialCardArrays));
     } else {
         return initialCardArrays;
     }
