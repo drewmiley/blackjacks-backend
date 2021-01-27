@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect(process.env.MONGODB || 'mongodb://localhost/blackjacks');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/blackjacks');
 
 const express = require('express');
 const cors = require('cors')
