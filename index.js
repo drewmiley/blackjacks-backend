@@ -44,10 +44,12 @@ router.post('/init', async (req, res) => {
     // TODO: Fix this
     const gameInProgress = await Game.findOne(FIND_ONE);
     if (!gameInProgress) {
-        await Game.create(newGame);
-        res.json({ message: 'Game created successfully' });
+        const created = await Game.create(newGame);
+        const players = created.players.map(player => player.name).join(', ');
+        res.json({ message: `Game created successfully for players ${players}` });
     } else {
-        res.json({ message: 'Game not created as one in progress'});
+        const players = gameInProgress.players.map(player => player.name).join(', ');
+        res.json({ message: `Game not created as one in progress for players ${players}` });
     }
 })
 
