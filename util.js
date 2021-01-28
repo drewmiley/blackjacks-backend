@@ -32,7 +32,7 @@ const getNextActiveCards = (lastCardsPlayed, currentActiveCards = { two: 0, blac
             return {
                 ...cardInPlay,
                 king: cardInPlay.value === 'King',
-                two: cardInPlay.value === 'Two' ? currentActiveCards.two + 1 : 0,
+                two: cardInPlay.value === '2' ? currentActiveCards.two + 1 : 0,
                 blackjacks: (cardInPlay.value === 'Jack' && SUITS.find(suit => suit.name === cardInPlay.suit).isBlack)
                     ? currentActiveCards.blackjacks + 1 : 0
             }
@@ -126,7 +126,7 @@ const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, no
     // HACK - Assume cardsPlayed are valid thanks to util giving possible options
     let newDeck = null;
     let newPlayers = null;
-    if (!cardsPlayed) {
+    if (!cardsPlayed || !cardsPlayed.length) {
         // TODO: Split out pick up cards into subfunctions
         const numberOfCardsToPickUp = cardsToPickUp(currentGameState.activeCards);
         let cardsPickedUp;
