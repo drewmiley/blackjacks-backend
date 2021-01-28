@@ -59,6 +59,7 @@ router.delete('/clear', async (req, res) => {
 })
 
 router.get('/state/:player', async (req, res) => {
+    // TODO: Improve if game does not exist
     const gameState = await Game.findOne(FIND_ONE).lean();
     res.json(displayGameStateForPlayer(gameState, req.params.player));
 })
