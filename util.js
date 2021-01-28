@@ -97,7 +97,7 @@ const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
         initialCards = hand
             .filter(card => card.value === value || card.suit === suit);
     }
-    const nominationSavedCombinations = (king || two || blackjacks) ? [] : hand.filter(card => card.value === 'Ace');
+    const nominationSavedCombinations = (king || two || blackjacks) ? [[]] : [[]].concat(hand.filter(card => card.value === 'Ace').map(card => [card]));
     return combinationsToPlay(initialCards.map(card => [card]), hand, king || two || blackjacks, nominationSavedCombinations);
 }
 
