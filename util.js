@@ -108,7 +108,7 @@ const visibleViewOfPlayers = (players, activeCards, playerName) => {
             handSize: player.hand.length,
             isLastCard: possibleCardsToPlay(activeCards, player.hand).filter(cards => cards.length === player.hand.length).length > 0,
             ...(player.name === playerName && { hand: player.hand }),
-            ...(player.name === playerName && { possibleCardsToPlay: possibleCardsToPlay(activeCards, player.hand) })
+            ...(player.name === playerName && { possibleCardsToPlay: possibleCardsToPlay(activeCards, player.hand).reverse() })
         }
     })
 }
