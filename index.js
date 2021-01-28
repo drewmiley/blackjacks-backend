@@ -43,7 +43,10 @@ router.post('/init', async (req, res) => {
     }
     // TODO: Fix this
     const gameInProgress = await Game.findOne(FIND_ONE);
-    if (!gameInProgress) {
+    if (!gameInProgress || req.body.clear) {
+        if (gameInProgress && req.body.clear) {
+            await Game.deleteOne(FIND_ONE);
+        }
         const created = await Game.create(newGame);
         const players = created.players.map(player => player.name).join(', ');
         res.json({ message: `Game created successfully for players ${players}` });
