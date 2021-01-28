@@ -122,27 +122,27 @@ const displayGameStateForPlayer = (gameState, playerName) => {
     };
 }
 
-const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, nomination = null) => {
+const calculateUpdatedGameState = ({ activeCards, deck, players, turnIndex }, playerName, cardsPlayed, nomination = null) => {
     // HACK - Assume cardsPlayed are valid thanks to util giving possible options
     let newDeck = null;
     let newPlayers = null;
     if (!cardsPlayed || !cardsPlayed.length) {
         // TODO: Split out pick up cards into subfunctions
-        const numberOfCardsToPickUp = cardsToPickUp(currentGameState.activeCards);
+        const numberOfCardsToPickUp = cardsToPickUp(activeCards);
         let cardsPickedUp;
         if (numberOfCardsToPickUp > deck.length) {
             const leftoverCardsToPickUp = numberOfCardsToPickUp - deck.length;
             const initialCardsPickedUp = deck;
-            const notInDeck = currentGameState.players.flatMap(player => player.hand).concat(initialCardsPickedUp);
+            const notInDeck = players.flatMap(player => player.hand).concat(initialCardsPickedUp);
             const initialNewDeck = getShuffledDeck()
                 .filter(card => !notInDeck.some(c => c.value === card.value && c.suit === card.suit));
             cardsPickedUp = initialNewDeck.splice(0, leftoverCardsToPickUp).concat(initialCardsPickedUp);
             newDeck = initialNewDeck.splice(leftoverCardsToPickUp);
         } else {
-            cardsPickedUp = currentGameState.deck.splice(0, numberOfCardsToPickUp);
-            newDeck = currentGameState.deck.splice(numberOfCardsToPickUp);
+            cardsPickedUp = deck.splice(0, numberOfCardsToPickUp);
+            newDeck = deck.splice(numberOfCardsToPickUp);
         }
-        newPlayers = currentGameState.player.map(player => {
+        newPlayers = players.map(player => {
             return {
                 name: player.name,
                 hand: player.name === playerName
@@ -151,8 +151,8 @@ const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, no
             }
         });
     } else {
-        newDeck = currentGameState.deck;
-        newPlayers = currentGameState.players.map(player => {
+        newDeck = deck;
+        newPlayers = players.map(player => {
             return {
                 name: player.name,
                 hand: player.name === playerName
@@ -165,8 +165,8 @@ const calculateUpdatedGameState = (currentGameState, playerName, cardsPlayed, no
         deck: newDeck,
         lastCardsPlayed: cardsPlayed,
         players: newPlayers,
-        turnIndex: (currentGameState.turnIndex + 1) % currentGameState.players.length,
-        activeCards: getNextActiveCards(cardsPlayed, currentGameState.activeCards, nomination)
+        turnIndex: (turnIndex + 1) % players.length,
+        activeCards: getNextActiveCards(cardsPlayed, activeCards, nomination)
     };
 }
 
