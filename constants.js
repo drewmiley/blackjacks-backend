@@ -7,11 +7,13 @@ const SUITS = [
     { name: 'Spades', isBlack: true },
     { name: 'Hearts', isBlack: false },
     { name: 'Diamonds', isBlack: false }
-];
+]
+const NUMBER_OF_CARDS_IN_INITIAL_HAND = 7;
 
 module.exports = {
     RETRIEVAL_ID,
     FIND_ONE,
     CARD_VALUES,
-    SUITS
+    SUITS,
+    NUMBER_OF_CARDS_IN_INITIAL_HAND
 }

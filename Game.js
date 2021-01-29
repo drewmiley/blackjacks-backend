@@ -28,7 +28,8 @@ const GameSchema = new Schema({
     lastCardsPlayed: [CardSchema],
     players: [PlayerSchema],
     turnIndex: Number,
-    activeCards: BlackJacksActiveCardsSchema
+    activeCards: BlackJacksActiveCardsSchema,
+    gameTypeIndex: Number
 });
 const Game = mongoose.model('Game', GameSchema);
 

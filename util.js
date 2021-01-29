@@ -17,7 +17,7 @@ const getShuffledDeck = () => {
 
 // TODO: Make work for JacksTwosAndEights
 // TODO: Move to generalise this into mix and match rules
-const getNextActiveCards = (lastCardsPlayed, currentActiveCards = { two: 0, blackjacks: 0 }, nomination = null) => {
+const getNextActiveCards = (gameTypeIndex, lastCardsPlayed, currentActiveCards = { two: 0, blackjacks: 0 }, nomination = null) => {
     if (lastCardsPlayed && lastCardsPlayed.length) {
         const cardInPlay = lastCardsPlayed[lastCardsPlayed.length - 1];
         if (cardInPlay.value === 'Ace') {
@@ -133,7 +133,7 @@ const cardsAreSame = (a, b) => {
     return a.every((_, i) => a[i].value === b[i].value && a[i].suit === b[i].suit);
 }
 
-const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players, turnIndex }, playerName, cardsPlayed, nomination = null) => {
+const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players, turnIndex, gameTypeIndex }, playerName, cardsPlayed, nomination = null) => {
     const playerHand = players.find(player => player.name === playerName).hand;
     if (!possibleCardsToPlay(activeCards, playerHand).find(cards => cardsAreSame(cards, cardsPlayed))) {
         return { activeCards, deck, lastCardsPlayed, players, turnIndex };
@@ -180,7 +180,7 @@ const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players
         lastCardsPlayed: cardsPlayed,
         players: newPlayers,
         turnIndex: (turnIndex + 1) % players.length,
-        activeCards: getNextActiveCards(cardsPlayed, activeCards, nomination)
+        activeCards: getNextActiveCards(gameTypeIndex, cardsPlayed, activeCards, nomination)
     };
 }
 
