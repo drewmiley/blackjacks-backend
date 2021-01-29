@@ -90,7 +90,7 @@ const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
     if (king) {
         initialCards = hand.filter(card => card.value === 'King');
     } else if (two) {
-        initialCards = hand.filter(card => card.value === 'Two');
+        initialCards = hand.filter(card => card.value === '2');
     } else if (blackjacks) {
         initialCards = hand.filter(card => card.value === 'Jack');
     } else {
