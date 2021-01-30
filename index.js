@@ -32,6 +32,7 @@ router.post('/init', async (req, res) => {
     const shuffledDeck = getShuffledDeck();
     const players = req.body.players.map((name, i) => ({ name, hand: shuffledDeck.slice(7 * i, 7 * (i + 1))}));
     const initialCard = shuffledDeck[7 * players.length];
+    // const initialCard = { value: 'Ace', suit: 'Clubs' };
     const deck = shuffledDeck.slice(7 * players.length + 1);
     const newGame = {
         retrieval_id: RETRIEVAL_ID,

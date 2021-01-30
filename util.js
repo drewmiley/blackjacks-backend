@@ -1,4 +1,5 @@
 const {
+    INITIAL_CARD_IS_ACE,
     CARD_VALUES,
     SUITS
 } = require('./constants');
@@ -20,10 +21,10 @@ const getShuffledDeck = () => {
 const getNextActiveCards = (lastCardsPlayed, currentActiveCards = { two: 0, blackjacks: 0 }, nomination = null) => {
     if (lastCardsPlayed && lastCardsPlayed.length) {
         const cardInPlay = lastCardsPlayed[lastCardsPlayed.length - 1];
-        if (cardInPlay.value === 'Ace' && nomination) {
+        if (cardInPlay.value === 'Ace') {
             return {
                 value: null,
-                suit: nomination,
+                suit: nomination || INITIAL_CARD_IS_ACE,
                 king: false,
                 two: 0,
                 blackjacks: 0
@@ -93,6 +94,8 @@ const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
         initialCards = hand.filter(card => card.value === '2');
     } else if (blackjacks) {
         initialCards = hand.filter(card => card.value === 'Jack');
+    } else if (suit === INITIAL_CARD_IS_ACE) {
+        initialCards = hand;
     } else {
         initialCards = hand
             .filter(card => card.value === value || card.suit === suit);

@@ -8,10 +8,12 @@ const SUITS = [
     { name: 'Hearts', isBlack: false },
     { name: 'Diamonds', isBlack: false }
 ]
+const INITIAL_CARD_IS_ACE = 'initialCardIsAce';
 
 module.exports = {
     RETRIEVAL_ID,
     FIND_ONE,
+    INITIAL_CARD_IS_ACE,
     CARD_VALUES,
     SUITS
 }
