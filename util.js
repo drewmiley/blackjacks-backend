@@ -1,5 +1,4 @@
 const {
-    INITIAL_CARD_IS_ACE,
     CARD_VALUES,
     SUITS
 } = require('./constants');
@@ -24,7 +23,7 @@ const getNextActiveCards = (lastCardsPlayed, currentActiveCards = { two: 0, blac
         if (cardInPlay.value === 'Ace') {
             return {
                 value: null,
-                suit: nomination || INITIAL_CARD_IS_ACE,
+                suit: nomination,
                 king: false,
                 two: 0,
                 blackjacks: 0
@@ -94,7 +93,7 @@ const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
         initialCards = hand.filter(card => card.value === '2');
     } else if (blackjacks) {
         initialCards = hand.filter(card => card.value === 'Jack');
-    } else if (suit === INITIAL_CARD_IS_ACE) {
+    } else if (!value && !suit) {
         initialCards = hand;
     } else {
         initialCards = hand

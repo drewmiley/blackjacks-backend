@@ -7,8 +7,7 @@ const SUITS = [
     { name: 'Spades', isBlack: true },
     { name: 'Hearts', isBlack: false },
     { name: 'Diamonds', isBlack: false }
-]
-const INITIAL_CARD_IS_ACE = 'initialCardIsAce';
+];
 
 module.exports = {
     RETRIEVAL_ID,
