@@ -7,7 +7,7 @@ const SUITS = [
     { name: 'Spades', isBlack: true },
     { name: 'Hearts', isBlack: false },
     { name: 'Diamonds', isBlack: false }
-]
+];
 
 module.exports = {
     RETRIEVAL_ID,

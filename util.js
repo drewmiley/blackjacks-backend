@@ -20,7 +20,7 @@ const getShuffledDeck = () => {
 const getNextActiveCards = (lastCardsPlayed, currentActiveCards = { two: 0, blackjacks: 0 }, nomination = null) => {
     if (lastCardsPlayed && lastCardsPlayed.length) {
         const cardInPlay = lastCardsPlayed[lastCardsPlayed.length - 1];
-        if (cardInPlay.value === 'Ace' && nomination) {
+        if (cardInPlay.value === 'Ace') {
             return {
                 value: null,
                 suit: nomination,
@@ -93,6 +93,8 @@ const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
         initialCards = hand.filter(card => card.value === '2');
     } else if (blackjacks) {
         initialCards = hand.filter(card => card.value === 'Jack');
+    } else if (!value && !suit) {
+        initialCards = hand;
     } else {
         initialCards = hand
             .filter(card => card.value === value || card.suit === suit);
@@ -106,7 +108,7 @@ const visibleViewOfPlayers = (players, activeCards, playerName) => {
         return {
             name: player.name,
             handSize: player.hand.length,
-            isLastCard: possibleCardsToPlay(activeCards, player.hand).filter(cards => cards.length === player.hand.length).length > 0,
+            isLastCard: combinationsToPlay(player.hand.map(card => [card]), player.hand, false, [[]]).filter(cards => cards.length === player.hand.length).length > 0,
             ...(player.name === playerName && { hand: player.hand }),
             ...(player.name === playerName && { possibleCardsToPlay: possibleCardsToPlay(activeCards, player.hand).reverse() })
         }
