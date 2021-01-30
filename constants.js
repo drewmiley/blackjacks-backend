@@ -12,7 +12,6 @@ const SUITS = [
 module.exports = {
     RETRIEVAL_ID,
     FIND_ONE,
-    INITIAL_CARD_IS_ACE,
     CARD_VALUES,
     SUITS
 }
