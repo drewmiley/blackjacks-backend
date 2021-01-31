@@ -97,7 +97,7 @@ const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
         initialCards = hand;
     } else {
         initialCards = hand
-            .filter(card => card.value === value || card.suit === suit);
+            .filter(card => card.value === value || (card.suit === suit && card.value !== 'Ace'));
     }
     const nominationSavedCombinations = (king || two || blackjacks) ? [[]] : [[]].concat(hand.filter(card => card.value === 'Ace').map(card => [card]));
     return combinationsToPlay(initialCards.map(card => [card]), hand, king || two || blackjacks, nominationSavedCombinations);
@@ -124,8 +124,18 @@ const displayGameStateForPlayer = (gameState, playerName) => {
     };
 }
 
-const calculateUpdatedGameState = ({ activeCards, deck, players, turnIndex }, playerName, cardsPlayed, nomination = null) => {
-    // HACK - Assume cardsPlayed are valid thanks to util giving possible options
+const cardsAreSame = (a, b) => {
+    if (a.length !== b.length) {
+        return false;
+    }
+    return a.every((_, i) => a[i].value === b[i].value && a[i].suit === b[i].suit);
+}
+
+const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players, turnIndex }, playerName, cardsPlayed, nomination = null) => {
+    const playerHand = players.find(player => player.name === playerName).hand;
+    if (!possibleCardsToPlay(activeCards, playerHand).find(cards => cardsAreSame(cards, cardsPlayed))) {
+        return { activeCards, deck, lastCardsPlayed, players, turnIndex };
+    }
     let newDeck = null;
     let newPlayers = null;
     if (!cardsPlayed || !cardsPlayed.length) {
