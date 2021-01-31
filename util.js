@@ -124,9 +124,16 @@ const displayGameStateForPlayer = (gameState, playerName) => {
     };
 }
 
+const cardsAreSame = (a, b) => {
+    if (a.length !== b.length) {
+        return false;
+    }
+    return a.every((_, i) => a[i].value === b[i].value && a[i].suit === b[i].suit);
+}
+
 const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players, turnIndex }, playerName, cardsPlayed, nomination = null) => {
     const playerHand = players.find(player => player.name === playerName).hand;
-    if (!possibleCardsToPlay(activeCards, playerHand).find(cards => cards == cardsPlayed)) {
+    if (!possibleCardsToPlay(activeCards, playerHand).find(cards => cardsAreSame(cards, cardsPlayed))) {
         return { activeCards, deck, lastCardsPlayed, players, turnIndex };
     }
     let newDeck = null;
