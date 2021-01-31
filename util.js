@@ -124,8 +124,11 @@ const displayGameStateForPlayer = (gameState, playerName) => {
     };
 }
 
-const calculateUpdatedGameState = ({ activeCards, deck, players, turnIndex }, playerName, cardsPlayed, nomination = null) => {
-    // HACK - Assume cardsPlayed are valid thanks to util giving possible options
+const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players, turnIndex }, playerName, cardsPlayed, nomination = null) => {
+    const playerHand = players.find(player => player.name === playerName).hand;
+    if (!possibleCardsToPlay(activeCards, playerHand).find(cards => cards == cardsPlayed)) {
+        return { activeCards, deck, lastCardsPlayed, players, turnIndex };
+    }
     let newDeck = null;
     let newPlayers = null;
     if (!cardsPlayed || !cardsPlayed.length) {
