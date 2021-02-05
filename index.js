@@ -73,7 +73,6 @@ router.get('/state/:player', async (req, res) => {
 router.post('/play/:player', async (req, res) => {
     const gameState = await Game.findOne(FIND_ONE).lean();
     const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === gameState.turnIndex;
-    // TODO: Could check validity of cards being played
     if (isPlayersTurn) {
         const updatedGameState = calculateUpdatedGameState(gameState, req.params.player, req.body.cards, req.body.nomination);
         await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
