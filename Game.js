@@ -17,7 +17,8 @@ const ActiveCardsSchema = new Schema({
     suit: String,
     king: Boolean,
     two: Number,
-    blackjacks: Number
+    blackjacks: Number,
+    gameTypeIndex: Number
 });
 
 const GameSchema = new Schema({
@@ -27,8 +28,7 @@ const GameSchema = new Schema({
     lastCardsPlayed: [CardSchema],
     players: [PlayerSchema],
     turnIndex: Number,
-    activeCards: ActiveCardsSchema,
-    gameTypeIndex: Number
+    activeCards: ActiveCardsSchema
 });
 const Game = mongoose.model('Game', GameSchema);
 

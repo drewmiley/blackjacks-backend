@@ -42,8 +42,7 @@ router.post('/init', async (req, res) => {
         lastCardsPlayed: [initialCard],
         players,
         turnIndex: 0,
-        activeCards: getNextActiveCards(gameTypeIndex, [initialCard]),
-        gameTypeIndex
+        activeCards: getNextActiveCards([initialCard], { gameTypeIndex, two: 0, blackjacks: 0 })
     }
     const gameInProgress = await Game.findOne(FIND_ONE);
     if (!gameInProgress || req.body.clear) {

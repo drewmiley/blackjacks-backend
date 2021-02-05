@@ -1,6 +1,9 @@
 const {
     CARD_VALUES,
-    SUITS
+    SUITS,
+    GAME_TYPE,
+    BLACKJACKS,
+    JACK_TWO_EIGHT
 } = require('./constants');
 
 const newDeck = () => {
@@ -15,48 +18,64 @@ const getShuffledDeck = () => {
         .map(card => ({ value: card.value, suit: card.suit }));
 }
 
-// TODO: Make work for JacksTwosAndEights
+const gameTypeIndexIsBlackjack = gameTypeIndex => GAME_TYPE[gameTypeIndex] === BLACKJACKS;
+const gameTypeIndexIsJackTwosAndEights = gameTypeIndex => GAME_TYPE[gameTypeIndex] === JACK_TWO_EIGHT;
+
 // TODO: Move to generalise this into mix and match rules
-const getNextActiveCards = (gameTypeIndex, lastCardsPlayed, currentActiveCards = { two: 0, blackjacks: 0 }, nomination = null) => {
+const getNextActiveCards = (lastCardsPlayed, { value, suit, two, blackjacks, gameTypeIndex }, nomination = null) => {
+    const isBlackjacks = gameTypeIndexIsBlackjack(gameTypeIndex);
+    const isJackTwosAndEights = gameTypeIndexIsJackTwosAndEights(gameTypeIndex);
     if (lastCardsPlayed && lastCardsPlayed.length) {
         const cardInPlay = lastCardsPlayed[lastCardsPlayed.length - 1];
-        if (cardInPlay.value === 'Ace') {
-            return {
-                value: null,
-                suit: nomination,
-                king: false,
-                two: 0,
-                blackjacks: 0
+        if (isBlackjacks) {
+            if (cardInPlay.value === 'Ace') {
+                return {
+                    value: null,
+                    suit: nomination,
+                    king: false,
+                    two: 0,
+                    blackjacks: 0
+                }
+            } else {
+                return {
+                    ...cardInPlay,
+                    king: cardInPlay.value === 'King',
+                    two: cardInPlay.value === '2' ? two + 1 : 0,
+                    blackjacks: (cardInPlay.value === 'Jack' && SUITS.find(suit => suit.name === cardInPlay.suit).isBlack) ? blackjacks + 1 : 0
+                }
             }
-        } else {
-            return {
-                ...cardInPlay,
-                king: cardInPlay.value === 'King',
-                two: cardInPlay.value === '2' ? currentActiveCards.two + 1 : 0,
-                blackjacks: (cardInPlay.value === 'Jack' && SUITS.find(suit => suit.name === cardInPlay.suit).isBlack)
-                    ? currentActiveCards.blackjacks + 1 : 0
-            }
+        }
+        if (isJackTwosAndEights) {
+
         }
     } else {
         return {
-            value: currentActiveCards.value,
-            suit: currentActiveCards.suit,
+            value,
+            suit,
             king: false,
             two: 0,
-            blackjacks: 0
+            blackjacks: 0,
+            gameTypeIndex
         }
     }
 }
 
-const cardsToPickUp = ({ king, two, blackjacks }) => {
-    if (king) {
-        return 0;
-    } else if (two) {
-        return 2 * two;
-    } else if (blackjacks) {
-        return 7 * blackjacks;
-    } else {
-        return 1;
+const cardsToPickUp = ({ king, two, blackjacks, gameTypeIndex }) => {
+    const isBlackjacks = gameTypeIndexIsBlackjack(gameTypeIndex);
+    const isJackTwosAndEights = gameTypeIndexIsJackTwosAndEights(gameTypeIndex);
+    if (isBlackjacks) {
+        if (king) {
+            return 0;
+        } else if (two) {
+            return 2 * two;
+        } else if (blackjacks) {
+            return 7 * blackjacks;
+        } else {
+            return 1;
+        }
+    }
+    if (isJackTwosAndEights) {
+
     }
 }
 
@@ -85,19 +104,26 @@ const combinationsToPlay = (initialCardArrays, hand, valueRunsOnly, savedCombina
     }
 }
 
-const possibleCardsToPlay = ({ value, suit, king, two, blackjacks }, hand) => {
+const possibleCardsToPlay = ({ value, suit, king, two, blackjacks, gameTypeIndex }, hand) => {
+    const isBlackjacks = gameTypeIndexIsBlackjack(gameTypeIndex);
+    const isJackTwosAndEights = gameTypeIndexIsJackTwosAndEights(gameTypeIndex);
     let initialCards;
-    if (king) {
-        initialCards = hand.filter(card => card.value === 'King');
-    } else if (two) {
-        initialCards = hand.filter(card => card.value === '2');
-    } else if (blackjacks) {
-        initialCards = hand.filter(card => card.value === 'Jack');
-    } else if (!value && !suit) {
-        initialCards = hand;
-    } else {
-        initialCards = hand
-            .filter(card => card.value === value || (card.suit === suit && card.value !== 'Ace'));
+    if (isBlackjacks) {
+        if (king) {
+            initialCards = hand.filter(card => card.value === 'King');
+        } else if (two) {
+            initialCards = hand.filter(card => card.value === '2');
+        } else if (blackjacks) {
+            initialCards = hand.filter(card => card.value === 'Jack');
+        } else if (!value && !suit) {
+            initialCards = hand;
+        } else {
+            initialCards = hand
+                .filter(card => card.value === value || (card.suit === suit && card.value !== 'Ace'));
+        }
+    }
+    if (isJackTwosAndEights) {
+
     }
     const acesInHand = hand.filter(card => card.value === 'Ace');
     const nominationSavedCombinations = (king || two || blackjacks) ?
@@ -133,7 +159,7 @@ const cardsAreSame = (a, b) => {
     return a.every((_, i) => a[i].value === b[i].value && a[i].suit === b[i].suit);
 }
 
-const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players, turnIndex, gameTypeIndex }, playerName, cardsPlayed, nomination = null) => {
+const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players, turnIndex }, playerName, cardsPlayed, nomination = null) => {
     const playerHand = players.find(player => player.name === playerName).hand;
     if (!possibleCardsToPlay(activeCards, playerHand).find(cards => cardsAreSame(cards, cardsPlayed))) {
         return { activeCards, deck, lastCardsPlayed, players, turnIndex };
@@ -180,7 +206,7 @@ const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players
         lastCardsPlayed: cardsPlayed,
         players: newPlayers,
         turnIndex: (turnIndex + 1) % players.length,
-        activeCards: getNextActiveCards(gameTypeIndex, cardsPlayed, activeCards, nomination)
+        activeCards: getNextActiveCards(cardsPlayed, activeCards, nomination)
     };
 }
 

@@ -9,11 +9,16 @@ const SUITS = [
     { name: 'Diamonds', isBlack: false }
 ]
 const NUMBER_OF_CARDS_IN_INITIAL_HAND = 7;
+const BLACKJACKS = 'blackjacks';
+const JACK_TWO_EIGHT = 'jackstwosandeights';
+const GAME_TYPE = [BLACKJACKS, JACK_TWO_EIGHT];
 
 module.exports = {
     RETRIEVAL_ID,
     FIND_ONE,
     CARD_VALUES,
     SUITS,
-    NUMBER_OF_CARDS_IN_INITIAL_HAND
+    NUMBER_OF_CARDS_IN_INITIAL_HAND,
+    BLACKJACKS,
+    JACK_TWO_EIGHT
 }
