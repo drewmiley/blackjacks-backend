@@ -48,7 +48,20 @@ const getNextActiveCards = (lastCardsPlayed, { value, suit, two, blackjacks, gam
             }
         }
         if (isJackTwosAndEights) {
-
+            if (cardInPlay.value === 'Jack') {
+                return {
+                    value: null,
+                    suit: nomination,
+                    two: 0,
+                    gameTypeIndex
+                }
+            } else {
+                return {
+                    ...cardInPlay,
+                    two: cardInPlay.value === '2' ? two + 1 : 0,
+                    gameTypeIndex
+                }
+            }
         }
     } else {
         return {
@@ -77,7 +90,11 @@ const cardsToPickUp = ({ king, two, blackjacks, gameTypeIndex }) => {
         }
     }
     if (isJackTwosAndEights) {
-
+        if (two) {
+            return 2 * two;
+        } else {
+            return 1;
+        }
     }
 }
 
@@ -123,14 +140,25 @@ const possibleCardsToPlay = ({ value, suit, king, two, blackjacks, gameTypeIndex
             initialCards = hand
                 .filter(card => card.value === value || (card.suit === suit && card.value !== 'Ace'));
         }
+        const acesInHand = hand.filter(card => card.value === 'Ace');
+        const nominationSavedCombinations = (king || two || blackjacks) ?
+            [[]] : combinationsToPlay(acesInHand.map(card => [card]), acesInHand, true, [[]]);
+        return combinationsToPlay(initialCards.map(card => [card]), hand, king || two || blackjacks, nominationSavedCombinations);
     }
     if (isJackTwosAndEights) {
-
+        if (two) {
+            initialCards = hand.filter(card => card.value === '2');
+        } else if (!value && !suit) {
+            initialCards = hand;
+        } else {
+            initialCards = hand
+                .filter(card => card.value === value || (card.suit === suit && card.value !== 'Jack'));
+        }
+        const jacksInHand = hand.filter(card => card.value === 'Jack');
+        const nominationSavedCombinations = two ?
+            [[]] : combinationsToPlay(jacksInHand.map(card => [card]), jacksInHand, true, [[]]);
+        return combinationsToPlay(initialCards.map(card => [card]), hand, two, nominationSavedCombinations);
     }
-    const acesInHand = hand.filter(card => card.value === 'Ace');
-    const nominationSavedCombinations = (king || two || blackjacks) ?
-        [[]] : combinationsToPlay(acesInHand.map(card => [card]), acesInHand, true, [[]]);
-    return combinationsToPlay(initialCards.map(card => [card]), hand, king || two || blackjacks, nominationSavedCombinations);
 }
 
 const visibleViewOfPlayers = (players, activeCards, playerName) => {
