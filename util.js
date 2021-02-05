@@ -18,8 +18,8 @@ const getShuffledDeck = () => {
         .map(card => ({ value: card.value, suit: card.suit }));
 }
 
-const gameTypeIndexIsBlackjack = gameTypeIndex => GAME_TYPE[gameTypeIndex] === BLACKJACKS;
-const gameTypeIndexIsJackTwosAndEights = gameTypeIndex => GAME_TYPE[gameTypeIndex] === JACK_TWO_EIGHT;
+const gameTypeIndexIsBlackjack = gameTypeIndex => GAME_TYPE[parseInt(gameTypeIndex)] === BLACKJACKS;
+const gameTypeIndexIsJackTwosAndEights = gameTypeIndex => GAME_TYPE[parseInt(gameTypeIndex)] === JACK_TWO_EIGHT;
 
 // TODO: Move to generalise this into mix and match rules
 const getNextActiveCards = (lastCardsPlayed, { value, suit, two, blackjacks, gameTypeIndex }, nomination = null) => {
@@ -34,14 +34,16 @@ const getNextActiveCards = (lastCardsPlayed, { value, suit, two, blackjacks, gam
                     suit: nomination,
                     king: false,
                     two: 0,
-                    blackjacks: 0
+                    blackjacks: 0,
+                    gameTypeIndex
                 }
             } else {
                 return {
                     ...cardInPlay,
                     king: cardInPlay.value === 'King',
                     two: cardInPlay.value === '2' ? two + 1 : 0,
-                    blackjacks: (cardInPlay.value === 'Jack' && SUITS.find(suit => suit.name === cardInPlay.suit).isBlack) ? blackjacks + 1 : 0
+                    blackjacks: (cardInPlay.value === 'Jack' && SUITS.find(suit => suit.name === cardInPlay.suit).isBlack) ? blackjacks + 1 : 0,
+                    gameTypeIndex
                 }
             }
         }

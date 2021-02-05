@@ -20,5 +20,6 @@ module.exports = {
     SUITS,
     NUMBER_OF_CARDS_IN_INITIAL_HAND,
     BLACKJACKS,
-    JACK_TWO_EIGHT
+    JACK_TWO_EIGHT,
+    GAME_TYPE
 }

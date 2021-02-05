@@ -30,7 +30,7 @@ router.use((req, res, next) => {
 });
 
 router.post('/init', async (req, res) => {
-    const gameTypeIndex = req.body.gameTypeIndex;
+    const gameTypeIndex = parseInt(req.body.gameTypeIndex);
     const shuffledDeck = getShuffledDeck();
     const players = req.body.players
         .map((name, i) => ({ name, hand: shuffledDeck.slice(NUMBER_OF_CARDS_IN_INITIAL_HAND * i, NUMBER_OF_CARDS_IN_INITIAL_HAND * (i + 1))}));
