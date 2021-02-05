@@ -16,6 +16,7 @@ const ActiveCardsSchema = new Schema({
     value: String,
     suit: String,
     king: Boolean,
+    eight: Boolean,
     two: Number,
     blackjacks: Number,
     gameTypeIndex: Number

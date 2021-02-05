@@ -58,6 +58,7 @@ const getNextActiveCards = (lastCardsPlayed, { value, suit, two, blackjacks, gam
             } else {
                 return {
                     ...cardInPlay,
+                    eight: cardInPlay.value === '8',
                     two: cardInPlay.value === '2' ? two + 1 : 0,
                     gameTypeIndex
                 }
@@ -68,6 +69,7 @@ const getNextActiveCards = (lastCardsPlayed, { value, suit, two, blackjacks, gam
             value,
             suit,
             king: false,
+            eight: false,
             two: 0,
             blackjacks: 0,
             gameTypeIndex
@@ -75,7 +77,7 @@ const getNextActiveCards = (lastCardsPlayed, { value, suit, two, blackjacks, gam
     }
 }
 
-const cardsToPickUp = ({ king, two, blackjacks, gameTypeIndex }) => {
+const cardsToPickUp = ({ king, eight, two, blackjacks, gameTypeIndex }) => {
     const isBlackjacks = gameTypeIndexIsBlackjack(gameTypeIndex);
     const isJackTwosAndEights = gameTypeIndexIsJackTwosAndEights(gameTypeIndex);
     if (isBlackjacks) {
@@ -90,7 +92,9 @@ const cardsToPickUp = ({ king, two, blackjacks, gameTypeIndex }) => {
         }
     }
     if (isJackTwosAndEights) {
-        if (two) {
+        if (eight) {
+            return 0;
+        } else if (two) {
             return 2 * two;
         } else {
             return 1;
@@ -123,7 +127,7 @@ const combinationsToPlay = (initialCardArrays, hand, valueRunsOnly, savedCombina
     }
 }
 
-const possibleCardsToPlay = ({ value, suit, king, two, blackjacks, gameTypeIndex }, hand) => {
+const possibleCardsToPlay = ({ value, suit, king, eight, two, blackjacks, gameTypeIndex }, hand) => {
     const isBlackjacks = gameTypeIndexIsBlackjack(gameTypeIndex);
     const isJackTwosAndEights = gameTypeIndexIsJackTwosAndEights(gameTypeIndex);
     let initialCards;
@@ -148,6 +152,8 @@ const possibleCardsToPlay = ({ value, suit, king, two, blackjacks, gameTypeIndex
     if (isJackTwosAndEights) {
         if (two) {
             initialCards = hand.filter(card => card.value === '2');
+        } else if (eight) {
+            initialCards = []
         } else if (!value && !suit) {
             initialCards = hand;
         } else {
