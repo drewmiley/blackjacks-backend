@@ -11,14 +11,15 @@ const PlayerSchema = new Schema({
     hand: [CardSchema]
 });
 
-// TODO: Create JacksTwoAndEightsActiveSchema
 // TODO: Move to generalise this into mix and match rules
-const BlackJacksActiveCardsSchema = new Schema({
+const ActiveCardsSchema = new Schema({
     value: String,
     suit: String,
     king: Boolean,
+    eight: Boolean,
     two: Number,
-    blackjacks: Number
+    blackjacks: Number,
+    gameTypeIndex: Number
 });
 
 const GameSchema = new Schema({
@@ -28,7 +29,7 @@ const GameSchema = new Schema({
     lastCardsPlayed: [CardSchema],
     players: [PlayerSchema],
     turnIndex: Number,
-    activeCards: BlackJacksActiveCardsSchema
+    activeCards: ActiveCardsSchema
 });
 const Game = mongoose.model('Game', GameSchema);
 
