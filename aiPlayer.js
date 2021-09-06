@@ -94,7 +94,7 @@ const playCards = gameState => {
     const aiPlayer = gameState.players.find(player => player.name === AI_PLAYER);
     const possibleCards = possibleCardsToPlay(gameState.activeCards, aiPlayer.hand);
     console.log(possibleCards);
-    return { cards: null, nomination: null };
+    return { cards: possibleCards[0], nomination: null };
 }
 
 module.exports = { playCards };
