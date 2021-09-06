@@ -1,76 +1,23 @@
 const {
     AI_PLAYER,
-    CARD_VALUES,
     SUITS
 } = require('./constants');
 
 const {
-    getShuffledDeck,
+    gameTypeIndexIsBlackjack,
+    gameTypeIndexIsJackTwosAndEights,
     possibleCardsToPlay
 } = require('./util');
 
-// class ProportionalPlayer extends Player {
-//
-//     @Override
-//     public List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
-//         List<List<Card>> possibleCardsToPlay = this.possibleCardsToPlay(rules, pile);
-//         List<Card> unplayedCardsRemainingInGame = unplayedCardsRemainingInGame(pile, hand);
-//         Long maxCardsToPlaySize = possibleCardsToPlay.stream()
-//                 .mapToLong(List::size)
-//                 .max()
-//                 .getAsLong();
-//         if (maxCardsToPlaySize == 0) {
-//             return new ArrayList<>();
-//         }
-//         Map<List<Card>, Double> maxSuitProportions = possibleCardsToPlay.stream()
-//                 .filter(cards -> cards.size() == maxCardsToPlaySize)
-//                 .collect(Collectors.toMap(c -> c,
-//                     c -> {
-//                         Map<Suit, Double> suitProportions = suitProportionsAfterCardsPlayed(
-//                                 unplayedCardsRemainingInGame,
-//                                 hand,
-//                                 c,
-//                                 Arrays.asList(FaceValue.TWO, FaceValue.JACK)
-//                         );
-//                         return c.get(c.size() - 1).getFaceValue() == rules.NOMINATE_SUIT ?
-//                                 suitProportions.entrySet().stream()
-//                                     .min(Comparator.comparingDouble(Map.Entry::getValue))
-//                                     .get()
-//                                     .getValue() :
-//                                 suitProportions.get(c.get(c.size() - 1).getSuit());
-//
-//                     })
-//                 );
-//         return maxSuitProportions.entrySet().stream()
-//                 .max(Comparator.comparingDouble(Map.Entry::getValue))
-//                 .get()
-//                 .getKey();
-//     }
-//
-//     @Override
-//     public Suit nomination(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
-//         List<Card> unplayedCardsRemainingInGame = unplayedCardsRemainingInGame(pile, hand);
-//         Map<Suit, Double> suitProportions = suitProportionsAfterCardsPlayed(
-//                 unplayedCardsRemainingInGame,
-//                 hand,
-//                 new ArrayList<>(),
-//                 Collections.singletonList(FaceValue.JACK)
-//         );
-//         return suitProportions.entrySet().stream()
-//                 .max(Comparator.comparingDouble(Map.Entry::getValue))
-//                 .get()
-//                 .getKey();
-//     }
-
-const unplayedCardsRemainingInGame = ({ deck, players }) => {
+const getUnplayedCardsRemainingInGame = ({ deck, players }) => {
     return deck.concat(players.find(player => player.name !== AI_PLAYER).hand);
 }
 
-const suitProportionsAfterCardsPlayed = (unplayedCardsRemainingInGame, hand, cardsToPlay, faceValuesToIgnore) => {
+const getSuitProportionsAfterCardsPlayed = (unplayedCardsRemainingInGame, hand, cardsToPlay, faceValuesToIgnore) => {
     const unPlayedCardsIgnoringFaceValues = unplayedCardsRemainingInGame.filter(card => !faceValuesToIgnore.includes(card.value));
-    // TODO: Implement cardsToPlay includes
     return SUITS.map(suit => {
         const suitLeftInHand = hand
+            // TODO: Implement cardsToPlay includes
             .filter(card => !faceValuesToIgnore.includes(card.value) && !cardsToPlay.includes(card))
             .filter(card => card.suit === suit).length;
         const suitLeftInGame = unPlayedCardsIgnoringFaceValuesfilter(card => card.suit === suit).length;
@@ -78,22 +25,51 @@ const suitProportionsAfterCardsPlayed = (unplayedCardsRemainingInGame, hand, car
     })
 }
 
-const cardsToPlay = ({ deck, lastCardsPlayed, players, turnIndex, activeCards }) => {
+const cardsToPlay = ({ deck, players, activeCards }) => {
     const aiPlayer = players.find(player => player.name === AI_PLAYER);
     const possibleCards = possibleCardsToPlay(activeCards, aiPlayer.hand);
-    console.log(possibleCards);
-    const cards = [];
-    return cards;
+    if (possibleCards.length === 1) {
+        return possibleCards[0];
+    }
+    const unplayedCardsRemainingInGame = getUnplayedCardsRemainingInGame({ deck, players });
+    const maxPlaySize = (possibleCards.sort((a, b) => a.length - b.length)[0]).length;
+    let faceValuesToIgnore = [];
+    if (gameTypeIndexIsBlackjack(activeCards.gameTypeIndex)) {
+        faceValuesToIgnore = ['Two', 'King'];
+    } else if (gameTypeIndexIsJackTwosAndEights(activeCards.gameTypeIndex)) {
+        faceValuesToIgnore = ['Two', 'Jack'];
+    }
+    const maxPlayCards = possibleCards.filter(cards => cards.length === maxPlaySize);
+    const maxSuitProportions = maxPlayCards
+        .map(cards => {
+            const suitProportions = getSuitProportionsAfterCardsPlayed(unplayedCardsRemainingInGame, aiPlayer.hand, cards, faceValuesToIgnore);
+            const isNomination = gameTypeIndexIsBlackjack(activeCards.gameTypeIndex) && (cards[cards.length - 1]).value === 'King' ||
+                gameTypeIndexIsJackTwosAndEights(activeCards.gameTypeIndex) && (cards[cards.length - 1]).value === 'Jack';
+            const proportion = isNomination ?
+                (suitProportions.sort((a, b) => b.proportion - a.proportion)[0]).proportion :
+                suitProportions.find(suitProportion => suitProportion.suit === (cards[cards.length - 1]).suit).proportion;
+            return { cards, proportion }
+        });
+    return (maxSuitProportions.sort((a, b) => a.proportion - b.proportion)[0]).cards;
 }
 
-const nomination = ({ deck, lastCardsPlayed, players, turnIndex, activeCards }) => {
-    const nomination = null;
-    return nomination;
+const nominationToPlay = ({ deck, players, activeCards }) => {
+    const hand = players.find(player => player.name === AI_PLAYER).hand;
+    const unplayedCardsRemainingInGame = getUnplayedCardsRemainingInGame({ deck, players });
+    let faceValuesToIgnore = [];
+    if (gameTypeIndexIsBlackjack(activeCards.gameTypeIndex)) {
+        faceValuesToIgnore = ['Ace'];
+    } else if (gameTypeIndexIsJackTwosAndEights(activeCards.gameTypeIndex)) {
+        faceValuesToIgnore = ['Jack'];
+    }
+    const suitProportionsAfterCardsPlayed = getSuitProportionsAfterCardsPlayed(unplayedCardsRemainingInGame, hand, [], faceValuesToIgnore);
+    return (suitProportions.sort((a, b) => a.proportion - b.proportion)[0]).suit;
 }
 
 const playCards = gameState => {
-    console.log(gameState);
     const cards = cardsToPlay(gameState);
+    // TODO: Add check on when to run this
+    const nomination = nominationToPlay(gameState);
     return { cards, nomination };
 }
 
