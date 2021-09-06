@@ -5,6 +5,7 @@ const {
 } = require('./constants');
 
 const {
+    getShuffledDeck,
     possibleCardsToPlay
 } = require('./util');
 
@@ -60,63 +61,32 @@ const {
 //                 .get()
 //                 .getKey();
 //     }
-//
-//     private List<Card> unplayedCardsRemainingInGame(Pile pile, List<Card> hand) {
-//         List<Card> cards = Stream.of(FaceValue.values())
-//                 .flatMap(faceValue -> Stream.of(Suit.values()).map(suit -> new Card(faceValue, suit)))
-//                 .collect(Collectors.toList());
-//         cards.remove(pile.topCard());
-//         cards.removeAll(pile.getCardsBelowTopCard());
-//         cards.removeAll(hand);
-//         return cards;
-//     }
-//
-//     private Map<Suit, Double> suitProportionsAfterCardsPlayed(List<Card> unplayedCardsRemainingInGame,
-//                                                             List<Card> hand,
-//                                                             List<Card> cardsToPlay,
-//                                                             List<FaceValue> faceValuesToIgnore) {
-//         List<Card> unPlayedCardsIgnoringFaceValues = unplayedCardsRemainingInGame.stream()
-//                 .filter(card -> !faceValuesToIgnore.contains(card.getFaceValue()))
-//                 .collect(Collectors.toList());
-//         return Arrays.stream(Suit.values())
-//                 .collect(Collectors.toMap(s -> s,
-//                         s -> {
-//                             Double suitLeftInHand = (double) hand.stream()
-//                                     .filter(card -> !faceValuesToIgnore.contains(card.getFaceValue()) && !cardsToPlay.contains(card))
-//                                     .filter(card -> card.getSuit() == s)
-//                                     .count();
-//                             Double suitLeftInGame = (double) unPlayedCardsIgnoringFaceValues.stream()
-//                                     .filter(card -> card.getSuit() == s)
-//                                     .count();
-//                             return suitLeftInHand / suitLeftInGame;
-//                         })
-//                 );
-//     }
-// }
 
-const unplayedCardsRemainingInGame = gameState => {
-    return [];
+const unplayedCardsRemainingInGame = ({ deck, players }) => {
+    return deck.concat(players.find(player => player.name !== AI_PLAYER).hand);
 }
 
-const suitProportionsAfterCardsPlayed = gameState => {
-    const proportions = SUITS.map(suit => {
-        return {
-            name: suit,
-            proportion: 0
-        }
-    });
-    return proportions;
+const suitProportionsAfterCardsPlayed = (unplayedCardsRemainingInGame, hand, cardsToPlay, faceValuesToIgnore) => {
+    const unPlayedCardsIgnoringFaceValues = unplayedCardsRemainingInGame.filter(card => !faceValuesToIgnore.includes(card.value));
+    // TODO: Implement cardsToPlay includes
+    return SUITS.map(suit => {
+        const suitLeftInHand = hand
+            .filter(card => !faceValuesToIgnore.includes(card.value) && !cardsToPlay.includes(card))
+            .filter(card => card.suit === suit).length;
+        const suitLeftInGame = unPlayedCardsIgnoringFaceValuesfilter(card => card.suit === suit).length;
+        return { name: suit, proportion: suitLeftInHand / suitLeftInGame };
+    })
 }
 
-const cardsToPlay = gameState => {
-    const aiPlayer = gameState.players.find(player => player.name === AI_PLAYER);
-    const possibleCards = possibleCardsToPlay(gameState.activeCards, aiPlayer.hand);
+const cardsToPlay = ({ deck, lastCardsPlayed, players, turnIndex, activeCards }) => {
+    const aiPlayer = players.find(player => player.name === AI_PLAYER);
+    const possibleCards = possibleCardsToPlay(activeCards, aiPlayer.hand);
     console.log(possibleCards);
     const cards = [];
     return cards;
 }
 
-const nomination = gameState => {
+const nomination = ({ deck, lastCardsPlayed, players, turnIndex, activeCards }) => {
     const nomination = null;
     return nomination;
 }
