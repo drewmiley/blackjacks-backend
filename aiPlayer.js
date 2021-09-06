@@ -1,38 +1,8 @@
+const {
+    possibleCardsToPlay
+} = require('./util');
 
-// public abstract class Player {
-//     private int playerIndex;
-//     List<Card> hand;
-//     List<Card> knownHand = new ArrayList<>();
-//
-//     List<List<Card>> possibleCardsToPlay(Rules rules, Pile pile) {
-//         List<List<Card>> possibleCardsToPlay = new ArrayList<>();
-//         final List<List<Card>>[] result = new List[]{new ArrayList<>()};
-//         result[0] = hand.stream()
-//                 .map(card -> Stream.of(card).collect(Collectors.toList()))
-//                 .filter(card -> rules.isAllowedPlay(pile, card))
-//                 .collect(Collectors.toList());
-//         possibleCardsToPlay.addAll(result[0]);
-//         IntStream.range(0, hand.size() - 1)
-//                 .mapToObj(i -> hand)
-//                 .flatMap(Collection::stream)
-//                 .forEach(handCard -> {
-//                     result[0] = result[0].stream()
-//                             .filter(cards -> {
-//                                 List<Card> cardPair = Stream.of(cards.get(cards.size() - 1), handCard)
-//                                         .collect(Collectors.toList());
-//                                 return !cards.contains(handCard) && rules.runValid(cardPair, pile);
-//                             })
-//                             .map(cards -> Stream.concat(
-//                                             cards.stream(),
-//                                             Stream.of(handCard).collect(Collectors.toList()).stream()
-//                                     ).collect(Collectors.toList()))
-//                             .collect(Collectors.toList());
-//                     possibleCardsToPlay.addAll(result[0]);
-//                 });
-//         possibleCardsToPlay.add(new ArrayList<>());
-//         return possibleCardsToPlay;
-//     }
-// }
+const AI_PLAYER = 'AI_PLAYER';
 
 // class ProportionalPlayer extends Player {
 //
@@ -121,9 +91,10 @@
 // }
 
 const playCards = gameState => {
+    const aiPlayer = gameState.players.find(player => player.name === AI_PLAYER);
+    const possibleCards = possibleCardsToPlay(gameState.activeCards, aiPlayer.hand);
+    console.log(possibleCards);
     return { cards: null, nomination: null };
 }
 
-const aiPlayer = { playCards };
-
-module.exports = aiPlayer;
+module.exports = { playCards };
