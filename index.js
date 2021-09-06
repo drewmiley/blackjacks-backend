@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const port = process.env.PORT || 8000;
 
+const AIPlayer = require('./aiPlayer');
 const {
     RETRIEVAL_ID,
     FIND_ONE,
@@ -29,10 +30,13 @@ router.use((req, res, next) => {
     next();
 });
 
+const AI_PLAYER = 'AI_PLAYER';
+
 router.post('/init', async (req, res) => {
     const gameTypeIndex = parseInt(req.body.gameTypeIndex);
     const shuffledDeck = getShuffledDeck();
-    const players = req.body.players
+    const modifiedPlayers = req.body.players.length === 1 ? req.body.players.concat([AI_PLAYER]) : req.body.players;
+    const players = modifiedPlayers
         .map((name, i) => ({ name, hand: shuffledDeck.slice(NUMBER_OF_CARDS_IN_INITIAL_HAND * i, NUMBER_OF_CARDS_IN_INITIAL_HAND * (i + 1))}));
     const initialCard = shuffledDeck[NUMBER_OF_CARDS_IN_INITIAL_HAND * players.length];
     const deck = shuffledDeck.slice(NUMBER_OF_CARDS_IN_INITIAL_HAND * players.length + 1);
@@ -66,7 +70,16 @@ router.delete('/clear', async (req, res) => {
 router.get('/state/:player', async (req, res) => {
     // TODO: Improve if game does not exist
     const gameState = await Game.findOne(FIND_ONE).lean();
-    res.json(displayGameStateForPlayer(gameState, req.params.player));
+    const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === gameState.turnIndex;
+    if (gameState.players.find(player => player.name === AI_PLAYER) && !isPlayersTurn) {
+        const { cards, nomination } = aiPlayer.playCards(gameState);
+        await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
+        const newGameState = await Game.findOne(FIND_ONE).lean();
+        // TODO: Add cleanup on game end
+        res.json(displayGameStateForPlayer(newGameState, req.params.player));
+    } else {
+        res.json(displayGameStateForPlayer(gameState, req.params.player));
+    }
 })
 
 router.post('/play/:player', async (req, res) => {
