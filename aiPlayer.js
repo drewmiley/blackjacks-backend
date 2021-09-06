@@ -1,4 +1,5 @@
 const {
+    AI_PLAYER,
     CARD_VALUES,
     SUITS
 } = require('./constants');
@@ -6,8 +7,6 @@ const {
 const {
     possibleCardsToPlay
 } = require('./util');
-
-const AI_PLAYER = 'AI_PLAYER';
 
 // class ProportionalPlayer extends Player {
 //
@@ -123,6 +122,7 @@ const nomination = gameState => {
 }
 
 const playCards = gameState => {
+    console.log(gameState);
     const cards = cardsToPlay(gameState);
     return { cards, nomination };
 }

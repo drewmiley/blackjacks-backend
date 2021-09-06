@@ -14,6 +14,7 @@ const AIPlayer = require('./aiPlayer');
 const {
     RETRIEVAL_ID,
     FIND_ONE,
+    AI_PLAYER,
     NUMBER_OF_CARDS_IN_INITIAL_HAND
 } = require('./constants');
 const Game = require('./Game');
@@ -29,8 +30,6 @@ router.use((req, res, next) => {
     console.log('Making request');
     next();
 });
-
-const AI_PLAYER = 'AI_PLAYER';
 
 router.post('/init', async (req, res) => {
     const gameTypeIndex = parseInt(req.body.gameTypeIndex);
