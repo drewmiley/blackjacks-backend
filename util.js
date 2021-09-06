@@ -249,6 +249,7 @@ const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players
 module.exports = {
     getShuffledDeck,
     getNextActiveCards,
+    possibleCardsToPlay,
     displayGameStateForPlayer,
     calculateUpdatedGameState
 }

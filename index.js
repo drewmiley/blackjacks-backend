@@ -72,7 +72,8 @@ router.get('/state/:player', async (req, res) => {
     const gameState = await Game.findOne(FIND_ONE).lean();
     const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === gameState.turnIndex;
     if (gameState.players.find(player => player.name === AI_PLAYER) && !isPlayersTurn) {
-        const { cards, nomination } = aiPlayer.playCards(gameState);
+        const { cards, nomination } = AIPlayer.playCards(gameState);
+        const updatedGameState = calculateUpdatedGameState(gameState, AI_PLAYER, cards, nomination);
         await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
         const newGameState = await Game.findOne(FIND_ONE).lean();
         // TODO: Add cleanup on game end
