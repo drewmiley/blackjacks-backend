@@ -1,23 +1,8 @@
-// package players;
-//
-// import gamemodel.*;
-//
-// import java.util.ArrayList;
-// import java.util.Collection;
-// import java.util.List;
-// import java.util.stream.Collectors;
-// import java.util.stream.IntStream;
-// import java.util.stream.Stream;
-//
+
 // public abstract class Player {
 //     private int playerIndex;
 //     List<Card> hand;
 //     List<Card> knownHand = new ArrayList<>();
-//
-//     Player(int playerIndex, List<Card> hand) {
-//         this.playerIndex = playerIndex;
-//         this.hand = hand;
-//     }
 //
 //     List<List<Card>> possibleCardsToPlay(Rules rules, Pile pile) {
 //         List<List<Card>> possibleCardsToPlay = new ArrayList<>();
@@ -47,41 +32,9 @@
 //         possibleCardsToPlay.add(new ArrayList<>());
 //         return possibleCardsToPlay;
 //     }
-//
-//     public abstract List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers);
-//
-//     public abstract Suit nomination(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers);
-//
-//     public void addCardToHand(Card card, boolean deckOrderSeen) {
-//         this.hand.add(card);
-//         if (deckOrderSeen) this.knownHand.add(card);
-//     }
-//
-//     public void removeCardFromHand(Card card) {
-//         this.hand.remove(card);
-//         this.knownHand.remove(card);
-//     }
-//
-//     public boolean handEmpty() {
-//         return this.hand.isEmpty();
-//     }
-//
-//     public abstract PlayerType getPlayerType();
 // }
 
-// package players;
-//
-// import gamemodel.*;
-//
-// import java.util.*;
-// import java.util.stream.Collectors;
-// import java.util.stream.Stream;
-//
 // class ProportionalPlayer extends Player {
-//
-//     ProportionalPlayer(int playerIndex, List<Card> hand) {
-//         super(playerIndex, hand);
-//     }
 //
 //     @Override
 //     public List<Card> cardsToPlay(Rules rules, Deck deck, Pile pile, List<VisiblePlayer> visiblePlayers) {
@@ -165,12 +118,6 @@
 //                         })
 //                 );
 //     }
-//
-//     @Override
-//     public PlayerType getPlayerType() {
-//         return PlayerType.PROPORTIONAL_PLAYER;
-//     }
-//
 // }
 
 const playCards = gameState => {
