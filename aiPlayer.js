@@ -1,4 +1,9 @@
 const {
+    CARD_VALUES,
+    SUITS
+} = require('./constants');
+
+const {
     possibleCardsToPlay
 } = require('./util');
 
@@ -90,11 +95,36 @@ const AI_PLAYER = 'AI_PLAYER';
 //     }
 // }
 
-const playCards = gameState => {
+const unplayedCardsRemainingInGame = gameState => {
+    return [];
+}
+
+const suitProportionsAfterCardsPlayed = gameState => {
+    const proportions = SUITS.map(suit => {
+        return {
+            name: suit,
+            proportion: 0
+        }
+    });
+    return proportions;
+}
+
+const cardsToPlay = gameState => {
     const aiPlayer = gameState.players.find(player => player.name === AI_PLAYER);
     const possibleCards = possibleCardsToPlay(gameState.activeCards, aiPlayer.hand);
     console.log(possibleCards);
-    return { cards: possibleCards[0], nomination: null };
+    const cards = [];
+    return cards;
+}
+
+const nomination = gameState => {
+    const nomination = null;
+    return nomination;
+}
+
+const playCards = gameState => {
+    const cards = cardsToPlay(gameState);
+    return { cards, nomination };
 }
 
 module.exports = { playCards };
