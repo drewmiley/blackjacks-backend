@@ -12,7 +12,7 @@ const SUITS = [
 const NUMBER_OF_CARDS_IN_INITIAL_HAND = 7;
 const BLACKJACKS = 'blackjacks';
 const JACK_TWO_EIGHT = 'jackstwosandeights';
-const GAME_TYPE = [BLACKJACKS, JACK_TWO_EIGHT];
+const GAME_TYPE = [JACK_TWO_EIGHT, BLACKJACKS];
 
 module.exports = {
     RETRIEVAL_ID,
