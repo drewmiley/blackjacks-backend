@@ -34,6 +34,7 @@ router.use((req, res, next) => {
 router.post('/init', async (req, res) => {
     const gameTypeIndex = parseInt(req.body.gameTypeIndex);
     const shuffledDeck = getShuffledDeck();
+    // req.body.aiPlayersTotal
     const modifiedPlayers = req.body.players.length === 1 ? req.body.players.concat([AI_PLAYER]) : req.body.players;
     const players = modifiedPlayers
         .map((name, i) => ({ name, hand: shuffledDeck.slice(NUMBER_OF_CARDS_IN_INITIAL_HAND * i, NUMBER_OF_CARDS_IN_INITIAL_HAND * (i + 1))}));
@@ -70,6 +71,7 @@ router.get('/state/:player', async (req, res) => {
     // TODO: Improve if game does not exist
     const gameState = await Game.findOne(FIND_ONE).lean();
     const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === gameState.turnIndex;
+    // req.body.aiPlayersTotal
     if (gameState.players.find(player => player.name === AI_PLAYER) && !isPlayersTurn) {
         const { cards, nomination } = AIPlayer.playCards(gameState);
         const updatedGameState = calculateUpdatedGameState(gameState, AI_PLAYER, cards, nomination);
