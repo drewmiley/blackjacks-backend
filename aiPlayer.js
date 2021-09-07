@@ -34,7 +34,7 @@ const cardsToPlay = ({ deck, players, activeCards }) => {
     const maxPlaySize = (possibleCards.sort((a, b) => a.length - b.length)[0]).length;
     let faceValuesToIgnore = [];
     if (gameTypeIndexIsBlackjack(activeCards.gameTypeIndex)) {
-        faceValuesToIgnore = ['Two', 'King'];
+        faceValuesToIgnore = ['Two', 'Jack'];
     } else if (gameTypeIndexIsJackTwosAndEights(activeCards.gameTypeIndex)) {
         faceValuesToIgnore = ['Two', 'Jack'];
     }
@@ -42,7 +42,7 @@ const cardsToPlay = ({ deck, players, activeCards }) => {
     const maxSuitProportions = maxPlayCards
         .map(cards => {
             const suitProportions = getSuitProportionsAfterCardsPlayed(unplayedCardsRemainingInGame, aiPlayer.hand, cards, faceValuesToIgnore);
-            const isNomination = gameTypeIndexIsBlackjack(activeCards.gameTypeIndex) && (cards[cards.length - 1]).value === 'King' ||
+            const isNomination = gameTypeIndexIsBlackjack(activeCards.gameTypeIndex) && (cards[cards.length - 1]).value === 'Jack' ||
                 gameTypeIndexIsJackTwosAndEights(activeCards.gameTypeIndex) && (cards[cards.length - 1]).value === 'Jack';
             const proportion = isNomination ?
                 (suitProportions.sort((a, b) => b.proportion - a.proportion)[0]).proportion :
@@ -67,7 +67,7 @@ const nominationToPlay = ({ deck, players, activeCards }) => {
 
 const playCards = gameState => {
     const cards = cardsToPlay(gameState);
-    const isNomination = gameTypeIndexIsBlackjack(gameState.activeCards.gameTypeIndex) && (cards[cards.length - 1]).value === 'King' ||
+    const isNomination = gameTypeIndexIsBlackjack(gameState.activeCards.gameTypeIndex) && (cards[cards.length - 1]).value === 'Jack' ||
         gameTypeIndexIsJackTwosAndEights(gameState.activeCards.gameTypeIndex) && (cards[cards.length - 1]).value === 'Jack';
     const nomination = isNomination ? nominationToPlay(gameState) : null;
     return { cards, nomination };
