@@ -53,6 +53,7 @@ const getNextActiveCards = (lastCardsPlayed, { value, suit, two, blackjacks, gam
                     value: null,
                     suit: nomination,
                     two: 0,
+                    eight: false,
                     gameTypeIndex
                 }
             } else {
@@ -221,6 +222,7 @@ const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players
         newPlayers = players.map(player => {
             return {
                 name: player.name,
+                isAI: player.isAI,
                 hand: player.name === playerName
                     ? player.hand.concat(cardsPickedUp)
                     : player.hand
@@ -231,6 +233,7 @@ const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players
         newPlayers = players.map(player => {
             return {
                 name: player.name,
+                isAI: player.isAI,
                 hand: player.name === playerName
                     ? player.hand.filter(card => !cardsPlayed.some(c => c.value === card.value && c.suit === card.suit))
                     : player.hand

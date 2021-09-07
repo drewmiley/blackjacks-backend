@@ -8,7 +8,8 @@ const CardSchema = new Schema({
 
 const PlayerSchema = new Schema({
     name: String,
-    hand: [CardSchema]
+    hand: [CardSchema],
+    isAI: Boolean
 });
 
 // TODO: Move to generalise this into mix and match rules
