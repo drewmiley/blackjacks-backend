@@ -7,9 +7,7 @@ const {
     possibleCardsToPlay
 } = require('./util');
 
-const getUnplayedCardsRemainingInGame = ({ deck, players }) => {
-    return deck.concat(players.find(player => player.name !== AI_PLAYER).hand);
-}
+const getUnplayedCardsRemainingInGame = ({ deck, players }) => deck.concat(players.find(player => player.name !== AI_PLAYER).hand);
 
 const getSuitProportionsAfterCardsPlayed = (unplayedCardsRemainingInGame, hand, cardsToPlay, faceValuesToIgnore) => {
     const unPlayedCardsIgnoringFaceValues = unplayedCardsRemainingInGame.filter(card => !faceValuesToIgnore.includes(card.value));
