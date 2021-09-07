@@ -10,9 +10,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 const port = process.env.PORT || 8000;
 
+const AIPlayer = require('./aiPlayer');
 const {
     RETRIEVAL_ID,
     FIND_ONE,
+    AI_PLAYER,
     NUMBER_OF_CARDS_IN_INITIAL_HAND
 } = require('./constants');
 const Game = require('./Game');
@@ -32,7 +34,8 @@ router.use((req, res, next) => {
 router.post('/init', async (req, res) => {
     const gameTypeIndex = parseInt(req.body.gameTypeIndex);
     const shuffledDeck = getShuffledDeck();
-    const players = req.body.players
+    const modifiedPlayers = req.body.players.length === 1 ? req.body.players.concat([AI_PLAYER]) : req.body.players;
+    const players = modifiedPlayers
         .map((name, i) => ({ name, hand: shuffledDeck.slice(NUMBER_OF_CARDS_IN_INITIAL_HAND * i, NUMBER_OF_CARDS_IN_INITIAL_HAND * (i + 1))}));
     const initialCard = shuffledDeck[NUMBER_OF_CARDS_IN_INITIAL_HAND * players.length];
     const deck = shuffledDeck.slice(NUMBER_OF_CARDS_IN_INITIAL_HAND * players.length + 1);
@@ -63,21 +66,33 @@ router.delete('/clear', async (req, res) => {
     res.json({ message: 'Game cleared successfully' });
 })
 
+const takeTurnAndReturnGameState = async (gameState, player, cards, nomination) => {
+    const updatedGameState = calculateUpdatedGameState(gameState, player, cards, nomination);
+    await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
+    const newGameState = await Game.findOne(FIND_ONE).lean();
+    // TODO: Add cleanup on game end
+    return displayGameStateForPlayer(newGameState, player);
+}
+
 router.get('/state/:player', async (req, res) => {
     // TODO: Improve if game does not exist
     const gameState = await Game.findOne(FIND_ONE).lean();
-    res.json(displayGameStateForPlayer(gameState, req.params.player));
+    const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === gameState.turnIndex;
+    if (gameState.players.find(player => player.name === AI_PLAYER) && !isPlayersTurn) {
+        const { cards, nomination } = AIPlayer.playCards(gameState);
+        const newGameState = await takeTurnAndReturnGameState(gameState, AI_PLAYER, cards, nomination);
+        res.json(newGameState);
+    } else {
+        res.json(displayGameStateForPlayer(gameState, req.params.player));
+    }
 })
 
 router.post('/play/:player', async (req, res) => {
     const gameState = await Game.findOne(FIND_ONE).lean();
     const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === gameState.turnIndex;
     if (isPlayersTurn) {
-        const updatedGameState = calculateUpdatedGameState(gameState, req.params.player, req.body.cards, req.body.nomination);
-        await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
-        const newGameState = await Game.findOne(FIND_ONE).lean();
-        // TODO: Add cleanup on game end
-        res.json(displayGameStateForPlayer(newGameState, req.params.player));
+        const newGameState = await takeTurnAndReturnGameState(gameState, req.params.player, req.body.cards, req.body.nomination);
+        res.json(newGameState);
     } else {
         res.json(displayGameStateForPlayer(gameState, req.params.player));
     }

@@ -248,7 +248,10 @@ const calculateUpdatedGameState = ({ activeCards, deck, lastCardsPlayed, players
 
 module.exports = {
     getShuffledDeck,
+    gameTypeIndexIsBlackjack,
+    gameTypeIndexIsJackTwosAndEights,
     getNextActiveCards,
+    possibleCardsToPlay,
     displayGameStateForPlayer,
     calculateUpdatedGameState
 }
