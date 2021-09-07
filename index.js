@@ -66,6 +66,14 @@ router.delete('/clear', async (req, res) => {
     res.json({ message: 'Game cleared successfully' });
 })
 
+const takeTurnAndReturnGameState = async (gameState, player, cards, nomination) => {
+    const updatedGameState = calculateUpdatedGameState(gameState, player, cards, nomination);
+    await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
+    const newGameState = await Game.findOne(FIND_ONE).lean();
+    // TODO: Add cleanup on game end
+    return displayGameStateForPlayer(newGameState, player);
+}
+
 router.get('/state/:player', async (req, res) => {
     // TODO: Improve if game does not exist
     const gameState = await Game.findOne(FIND_ONE).lean();
