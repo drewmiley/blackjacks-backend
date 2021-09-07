@@ -17,8 +17,7 @@ const getSuitProportionsAfterCardsPlayed = (unplayedCardsRemainingInGame, hand, 
     const unPlayedCardsIgnoringFaceValues = unplayedCardsRemainingInGame.filter(card => !faceValuesToIgnore.includes(card.value));
     return SUITS.map(suit => {
         const suitLeftInHand = hand
-            // TODO: Implement cardsToPlay includes
-            .filter(card => !faceValuesToIgnore.includes(card.value) && !cardsToPlay.includes(card))
+            .filter(card => !faceValuesToIgnore.includes(card.value) && !cardsToPlay.find(cardToPlay => cardToPlay.value == card.value && cardToPlay.suit === card.suit))
             .filter(card => card.suit === suit).length;
         const suitLeftInGame = unPlayedCardsIgnoringFaceValuesfilter(card => card.suit === suit).length;
         return { name: suit, proportion: suitLeftInHand / suitLeftInGame };
@@ -68,8 +67,9 @@ const nominationToPlay = ({ deck, players, activeCards }) => {
 
 const playCards = gameState => {
     const cards = cardsToPlay(gameState);
-    // TODO: Add check on when to run this
-    const nomination = nominationToPlay(gameState);
+    const isNomination = gameTypeIndexIsBlackjack(gameState.activeCards.gameTypeIndex) && (cards[cards.length - 1]).value === 'King' ||
+        gameTypeIndexIsJackTwosAndEights(gameState.activeCards.gameTypeIndex) && (cards[cards.length - 1]).value === 'Jack';
+    const nomination = isNomination ? nominationToPlay(gameState) : null;
     return { cards, nomination };
 }
 
