@@ -47,7 +47,7 @@ const cardsToPlay = ({ deck, players, activeCards }) => {
             const proportion = isNomination ?
                 (suitProportions.sort((a, b) => b.proportion - a.proportion)[0]).proportion :
                 suitProportions.find(suitProportion => suitProportion.suit === (cards[cards.length - 1]).suit).proportion;
-            return { cards, proportion }
+            return { cards, proportion };
         });
     return (maxSuitProportions.sort((a, b) => a.proportion - b.proportion)[0]).cards;
 }
