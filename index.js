@@ -80,11 +80,8 @@ router.get('/state/:player', async (req, res) => {
     const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === gameState.turnIndex;
     if (gameState.players.find(player => player.name === AI_PLAYER) && !isPlayersTurn) {
         const { cards, nomination } = AIPlayer.playCards(gameState);
-        const updatedGameState = calculateUpdatedGameState(gameState, AI_PLAYER, cards, nomination);
-        await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
-        const newGameState = await Game.findOne(FIND_ONE).lean();
-        // TODO: Add cleanup on game end
-        res.json(displayGameStateForPlayer(newGameState, req.params.player));
+        const newGameState = await takeTurnAndReturnGameState(gameState, AI_PLAYER, cards, nomination);
+        res.json(newGameState);
     } else {
         res.json(displayGameStateForPlayer(gameState, req.params.player));
     }
@@ -94,11 +91,8 @@ router.post('/play/:player', async (req, res) => {
     const gameState = await Game.findOne(FIND_ONE).lean();
     const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === gameState.turnIndex;
     if (isPlayersTurn) {
-        const updatedGameState = calculateUpdatedGameState(gameState, req.params.player, req.body.cards, req.body.nomination);
-        await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
-        const newGameState = await Game.findOne(FIND_ONE).lean();
-        // TODO: Add cleanup on game end
-        res.json(displayGameStateForPlayer(newGameState, req.params.player));
+        const newGameState = await takeTurnAndReturnGameState(gameState, req.params.player, req.body.cards, req.body.nomination);
+        res.json(newGameState);
     } else {
         res.json(displayGameStateForPlayer(gameState, req.params.player));
     }
