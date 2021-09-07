@@ -34,9 +34,10 @@ router.use((req, res, next) => {
 router.post('/init', async (req, res) => {
     const gameTypeIndex = parseInt(req.body.gameTypeIndex);
     const shuffledDeck = getShuffledDeck();
-    const modifiedPlayers = req.body.players.length === 1 ? req.body.players.concat([AI_PLAYER]) : req.body.players;
-    const players = modifiedPlayers
-        .map((name, i) => ({ name, hand: shuffledDeck.slice(NUMBER_OF_CARDS_IN_INITIAL_HAND * i, NUMBER_OF_CARDS_IN_INITIAL_HAND * (i + 1))}));
+    const aiPlayers = [...Array(req.body.aiPlayersTotal).keys()].map(id => ( { name: `${AI_PLAYER}_${id}`, isAI: true }));
+    const humanPlayers = req.body.players.map(name => ({ name, isAI: false }));
+    const players = humanPlayers.concat(aiPlayers)
+        .map((player, i) => ({ ...player, hand: shuffledDeck.slice(NUMBER_OF_CARDS_IN_INITIAL_HAND * i, NUMBER_OF_CARDS_IN_INITIAL_HAND * (i + 1))}));
     const initialCard = shuffledDeck[NUMBER_OF_CARDS_IN_INITIAL_HAND * players.length];
     const deck = shuffledDeck.slice(NUMBER_OF_CARDS_IN_INITIAL_HAND * players.length + 1);
     const newGame = {
@@ -69,10 +70,10 @@ router.delete('/clear', async (req, res) => {
 router.get('/state/:player', async (req, res) => {
     // TODO: Improve if game does not exist
     const gameState = await Game.findOne(FIND_ONE).lean();
-    const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === gameState.turnIndex;
-    if (gameState.players.find(player => player.name === AI_PLAYER) && !isPlayersTurn) {
-        const { cards, nomination } = AIPlayer.playCards(gameState);
-        const updatedGameState = calculateUpdatedGameState(gameState, AI_PLAYER, cards, nomination);
+    const playersTurn = gameState.players[gameState.turnIndex];
+    if (playersTurn.isAI) {
+        const { cards, nomination } = AIPlayer.playCards(gameState, playersTurn.name);
+        const updatedGameState = calculateUpdatedGameState(gameState, playersTurn.name, cards, nomination);
         await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
         const newGameState = await Game.findOne(FIND_ONE).lean();
         // TODO: Add cleanup on game end
