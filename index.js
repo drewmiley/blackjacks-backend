@@ -66,22 +66,17 @@ router.delete('/clear', async (req, res) => {
     res.json({ message: 'Game cleared successfully' });
 })
 
-const takeTurnAndReturnGameState = async (gameState, player, cards, nomination) => {
-    const updatedGameState = calculateUpdatedGameState(gameState, player, cards, nomination);
-    await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
-    const newGameState = await Game.findOne(FIND_ONE).lean();
-    // TODO: Add cleanup on game end
-    return displayGameStateForPlayer(newGameState, player);
-}
-
 router.get('/state/:player', async (req, res) => {
     // TODO: Improve if game does not exist
     const gameState = await Game.findOne(FIND_ONE).lean();
     const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === gameState.turnIndex;
     if (gameState.players.find(player => player.name === AI_PLAYER) && !isPlayersTurn) {
         const { cards, nomination } = AIPlayer.playCards(gameState);
-        const newGameState = await takeTurnAndReturnGameState(gameState, AI_PLAYER, cards, nomination);
-        res.json(newGameState);
+        const updatedGameState = calculateUpdatedGameState(gameState, AI_PLAYER, cards, nomination);
+        await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
+        const newGameState = await Game.findOne(FIND_ONE).lean();
+        // TODO: Add cleanup on game end
+        res.json(displayGameStateForPlayer(newGameState, req.params.player));
     } else {
         res.json(displayGameStateForPlayer(gameState, req.params.player));
     }
@@ -91,8 +86,11 @@ router.post('/play/:player', async (req, res) => {
     const gameState = await Game.findOne(FIND_ONE).lean();
     const isPlayersTurn = gameState.players.findIndex(player => player.name === req.params.player) === gameState.turnIndex;
     if (isPlayersTurn) {
-        const newGameState = await takeTurnAndReturnGameState(gameState, req.params.player, req.body.cards, req.body.nomination);
-        res.json(newGameState);
+        const updatedGameState = calculateUpdatedGameState(gameState, req.params.player, req.body.cards, req.body.nomination);
+        await Game.findOneAndUpdate(FIND_ONE, updatedGameState);
+        const newGameState = await Game.findOne(FIND_ONE).lean();
+        // TODO: Add cleanup on game end
+        res.json(displayGameStateForPlayer(newGameState, req.params.player));
     } else {
         res.json(displayGameStateForPlayer(gameState, req.params.player));
     }

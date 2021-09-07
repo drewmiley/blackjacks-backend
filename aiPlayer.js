@@ -58,7 +58,7 @@ const playCards = gameState => {
         nominationValue = 'Jack';
     }
     const cards = cardsToPlay(gameState, nominationValue);
-    const nomination = cards[cards.length - 1].value === 'Jack' ? nominationToPlay(gameState, nominationValue) : null;
+    const nomination = cards.length && cards[cards.length - 1].value === nominationValue ? nominationToPlay(gameState, nominationValue) : null;
     return { cards, nomination };
 }
 
